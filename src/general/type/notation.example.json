@@ -1,0 +1,40 @@
+{
+	"v": "",
+	"meta": {
+		"noter": "",
+		"painter": "",
+		"composer": "",
+		"offset": 0.0,
+		"notesNum": 0,
+		"bpm": 0.0
+	},
+	"track": {
+		"red": null,
+		"green": null,
+		"yellow": null,
+		"blue": null,
+		"purple": {
+			"startX": 0.0,
+			"startY": 0.0,
+			"endX": 0.0,
+			"endY": 0.0,
+			"notes": [
+				{
+					"type": 0,
+					"pos": 100,
+					"length": 10
+				}
+			]
+		}
+	},
+	"shows": [
+		{
+			"type": "0",
+			"content": "hello,world!",
+			"time": 100.0,
+			"duration": 100.0,
+			"x": 0.0,
+			"y": 0.0
+		}
+	]
+}
