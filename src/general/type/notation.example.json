@@ -14,15 +14,73 @@
 		"yellow": null,
 		"blue": null,
 		"purple": {
-			"startX": 0.0,
-			"startY": 0.0,
-			"endX": 0.0,
-			"endY": 0.0,
-			"notes": [
+			"eventLayers": [
 				{
-					"type": 0,
-					"pos": 100,
-					"length": 10
+					"alphaEvents": [
+						{
+							"easingLeft": 0.0,
+							"easingRight": 1.0,
+							"easingType": 1,
+							"end": 255,
+							"endTime": [1, 0, 1],
+
+							"start": 255,
+							"startTime": [0, 0, 1]
+						}
+					],
+					"moveXEvents": [
+						{
+							"easingLeft": 0.0,
+							"easingRight": 1.0,
+							"easingType": 1,
+							"end": 0.0,
+							"endTime": [1, 0, 1],
+
+							"start": 0.0,
+							"startTime": [0, 0, 1]
+						},
+						{
+							"easingLeft": 0.0,
+							"easingRight": 1.0,
+							"easingType": 1,
+							"end": 0.0,
+							"endTime": [272, 0, 1],
+
+							"start": 0.0,
+							"startTime": [268, 0, 1]
+						}
+					],
+					"moveYEvents": [
+						{
+							"easingLeft": 0.0,
+							"easingRight": 1.0,
+							"easingType": 1,
+							"end": -300.0,
+							"endTime": [1, 0, 1],
+
+							"start": -300.0,
+							"startTime": [0, 0, 1]
+						}
+					],
+					"rotateEvents": [
+						{
+							"easingLeft": 0.0,
+							"easingRight": 1.0,
+							"easingType": 1,
+							"end": 0.0,
+							"endTime": [1, 0, 1],
+							"start": 0.0,
+							"startTime": [0, 0, 1]
+						}
+					],
+					"speedEvents": [
+						{
+							"end": 10.0,
+							"endTime": [1, 0, 1],
+							"start": 10.0,
+							"startTime": [0, 0, 1]
+						}
+					]
 				}
 			]
 		}

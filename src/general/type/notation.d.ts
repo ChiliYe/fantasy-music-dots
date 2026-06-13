@@ -9,40 +9,61 @@ interface notationMeta {
 	/**BPM*/ bpm: number;
 }
 
-interface notationNoteInfo {
-	/**音符类型*/ type: /**tap*/
-		0 | /**hold*/ 1 | /**slide*/ 2 | /**tail*/ 3;
-	/**音符位置*/ pos: number;
-	/**长音符长度*/ length?: number;
+interface notationEventTime {
+	0: number;
+	1: number;
+	2: number;
+}
+
+interface notationEvent {
+	/**缓动左边界*/ easingLeft: number;
+	/**缓动右边界*/ easingRight: number;
+	/**缓动类型*/ easingType: number;
+	/**结束值*/ end: number;
+	/**结束时间*/ endTime: [number, number, number];
+	/**开始值*/ start: number;
+	/**开始时间*/ startTime: [number, number, number];
+	/**事件关联组*/ linkgroup?: number;
+}
+
+interface notationEventLayer {
+	alphaEvents?: Array<notationEvent>;
+	moveXEvents?: Array<notationEvent>;
+	moveYEvents?: Array<notationEvent>;
+	rotateEvents?: Array<notationEvent>;
+	speedEvents?: Array<notationEvent>;
+}
+
+interface notationTrackLayer {
+	/**事件图层*/ eventLayers: Array<notationEventLayer>;
 }
 
 interface notationTrackInfo {
-	red: Array<notationNoteInfo>;
-	blue: Array<notationNoteInfo>;
-	yellow: Array<notationNoteInfo>;
-	green: Array<notationNoteInfo>;
-	purple: Array<notationNoteInfo>;
+	red: notationTrackLayer | null;
+	blue: notationTrackLayer | null;
+	yellow: notationTrackLayer | null;
+	green: notationTrackLayer | null;
+	purple: notationTrackLayer | null;
 }
 
 interface notationShowInfo {
-	/**表演类型 */ type: /**文字*/
-		1 | /**图片*/ 2 | /**粒子效果 */ 3;
-	/**表演内容 */ content: string;
-	/**表演时间 */ time: number;
-	/**表演持续时间 */ duration: number;
-	/**表演x坐标 */ x: number;
-	/**表演y坐标 */ y: number;
+	/**表演类型*/ type: string;
+	/**表演内容*/ content: string;
+	/**表演时间*/ time: number;
+	/**表演持续时间*/ duration: number;
+	/**表演x坐标*/ x: number;
+	/**表演y坐标*/ y: number;
 }
 
 interface notationFormat {
-	/**铺面版本*/ v: "1";
+	/**谱面版本*/ v: string;
 	/**谱面元信息*/ meta: notationMeta;
-	/**谱面音轨信息*/ tracks: notationTrackInfo;
+	/**谱面音轨信息*/ track: notationTrackInfo;
 	/**表演信息*/ shows: Array<notationShowInfo>;
 }
 
 interface notationType {
 	/**谱面文件*/ notationFormat: notationFormat;
-	/**谱面封面 */ cover: DataURL;
-	/**谱面文件名 */ name: string;
+	/**谱面封面*/ cover: DataURL;
+	/**谱面文件名*/ name: string;
 }
