@@ -1,0 +1,22 @@
+{
+	"source": {
+		"include": ["src"],
+		"includePattern": ".+\\.(ts|tsx|js|jsx)$",
+		"excludePattern": "(^|\\/|\\\\)_"
+	},
+	"plugins": ["jsdoc-babel"],
+	"babel": {
+		"extensions": ["ts", "tsx", "js", "jsx"],
+		"presets": [
+			"@babel/preset-typescript",
+			[
+				"@babel/preset-react",
+				{ "runtime": "automatic" }
+			]
+		]
+	},
+	"opts": {
+		"destination": "./doc/output",
+		"recurse": true
+	}
+}
