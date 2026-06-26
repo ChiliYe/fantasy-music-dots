@@ -1,0 +1,149 @@
+/** @format */
+
+/**
+ * 线段配置对象。
+ *
+ * startX/startY 表示线段起点，endX/endY 表示线段终点。
+ */
+export interface SegmentConfig {
+	/** 线段起点 x 坐标 */
+	startX: number;
+	/** 线段起点 y 坐标 */
+	startY: number;
+	/** 线段终点 x 坐标 */
+	endX: number;
+	/** 线段终点 y 坐标 */
+	endY: number;
+}
+
+/**
+ * 水平方向类型：在画布坐标系中，x 轴从左到右增大。
+ */
+export type HorizontalDirection = "left" | "right" | "none";
+
+/**
+ * 垂直方向类型：在画布坐标系中，y 轴从上到下增大。
+ */
+export type VerticalDirection = "up" | "down" | "none";
+
+/**
+ * 线段方向对象，包含水平、垂直方向和矢量信息。
+ */
+export interface SegmentDirection {
+	/** 水平方向 */
+	horizontal?: HorizontalDirection;
+	/** 垂直方向 */
+	vertical?: VerticalDirection;
+	/** x 方向增量 */
+	dx: number;
+	/** y 方向增量 */
+	dy: number;
+	/** x 方向标准化值，-1/0/1 */
+	normX: number;
+	/** y 方向标准化值，-1/0/1 */
+	normY: number;
+}
+
+/**
+ * 线段矢量对象，表示起点到终点的增量。
+ */
+export interface SegmentVector {
+	/** x 方向增量 */
+	dx: number;
+	/** y 方向增量 */
+	dy: number;
+}
+
+function normalize(value: number) {
+	if (value > 0) return 1;
+	if (value < 0) return -1;
+	return 0;
+}
+
+/**
+ * 计算线段向量。
+ *
+ * 坐标系为左上角原点，x 轴向右增大，y 轴向下增大。
+ *
+ * @param config 线段起点和终点配置
+ * @returns 返回线段向量 dx、dy
+ */
+export function getSegmentVector(
+	config: SegmentConfig,
+): SegmentVector {
+	return {
+		dx: config.endX - config.startX,
+		dy: config.endY - config.startY,
+	};
+}
+
+/**
+ * 根据线段起点和终点确定方向。
+ *
+ * 返回值为可直接用于绘制的新方向对象。
+ *
+ * @param config 线段起点和终点配置
+ * @returns 包含水平、垂直方向、增量和标准化向量的方向对象
+ */
+export function getSegmentDirection(
+	config: SegmentConfig,
+): SegmentDirection {
+	const { dx, dy } = getSegmentVector(config);
+
+	const horizontal: HorizontalDirection =
+		dx > 0 ? "right" : dx < 0 ? "left" : "none";
+	const vertical: VerticalDirection =
+		dy > 0 ? "down" : dy < 0 ? "up" : "none";
+
+	return {
+		horizontal,
+		vertical,
+		dx,
+		dy,
+		normX: normalize(dx),
+		normY: normalize(dy),
+	};
+}
+
+/**
+ * 根据方向对象和距离计算新坐标。
+ *
+ * 该方向对象可直接用于绘制新路径。
+ *
+ * @param x 起始点 x 坐标
+ * @param y 起始点 y 坐标
+ * @param direction 线段方向对象
+ * @param distance 沿方向移动的距离，默认为 1
+ * @returns 返回移动后的新坐标
+ */
+export function getPointAlongDirection(
+	x: number,
+	y: number,
+	direction: SegmentDirection,
+	distance = 1,
+) {
+	return {
+		x: x + direction.normX * distance,
+		y: y + direction.normY * distance,
+	};
+}
+
+/**
+ * 根据线段起点、终点和距离生成新的绘制终点。
+ *
+ * @param config 线段起点和终点配置
+ * @param distance 沿线段方向生成的终点距离起点的长度
+ * @returns 返回从起点移动指定距离后的终点坐标
+ */
+export function getPathEndPoint(
+	config: SegmentConfig,
+	distance: number,
+) {
+	const direction = getSegmentDirection(config);
+	return getPointAlongDirection(
+		config.startX,
+		config.startY,
+		direction,
+		distance,
+	);
+}

@@ -1,6 +1,7 @@
 /** @format */
 
 import "../frameLoader/frameLoader";
+import { setColor } from "../function/setColor";
 // import { Stack } from "../stl/stack";
 
 /**
@@ -21,14 +22,9 @@ export function circleBrush(
 		color?: string | [number, number, number];
 	},
 ) {
+	ctx.restore();
 	ctx.beginPath();
-	if (typeof config.color === "string") {
-		ctx.strokeStyle = config.color;
-		console.log(ctx.strokeStyle);
-	} else if (Array.isArray(config.color)) {
-		ctx.strokeStyle = `rgb(${config.color[0]}, ${config.color[1]}, ${config.color[2]})`;
-		console.log(ctx.strokeStyle);
-	}
+	setColor(ctx, config.color);
 	ctx.arc(
 		config.x,
 		config.y,
@@ -37,4 +33,6 @@ export function circleBrush(
 		Math.PI * 2,
 	);
 	ctx.closePath();
+	ctx.reset();
+	ctx.stroke();
 }
