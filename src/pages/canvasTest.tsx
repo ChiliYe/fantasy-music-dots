@@ -1,8 +1,8 @@
 /** @format */
 
 import { useEffect, useRef } from "react";
-import "../general/pattern/circle";
-import { verticalLineBrush } from "../general/pattern/verticalLine‌";
+import PlayerShow from "../block/player/show";
+import { parseNotation } from "../block/player/notationParse";
 
 export default function CanvasTest() {
 	const canvasRef = useRef<HTMLCanvasElement | null>(
@@ -16,22 +16,64 @@ export default function CanvasTest() {
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
 
-		ctx.beginPath();
-		ctx.moveTo(50, 50);
-		ctx.lineTo(150, 50);
-		ctx.closePath();
-		ctx.stroke();
+		(
+			globalThis as typeof globalThis & {
+				__notationFrameRate?: number;
+			}
+		).__notationFrameRate = 60;
 
-		verticalLineBrush(ctx, {
-			x: 100,
-			y: 50,
-			length: 100,
-			vxs: 50,
-			vxe: 150,
-			vys: 50,
-			vye: 50,
-			color: [0, 0, 255],
-		});
+		const notationSample: notationFormat = {
+			v: "1.0",
+			meta: {
+				noter: "demo",
+				painter: "demo",
+				composer: "demo",
+				offset: 0,
+				notesNum: 2,
+				bpm: 120,
+			},
+			track: {
+				red: {
+					key: 2,
+					eventLayers: [
+						{
+							alphaEvents: [
+								{
+									easingLeft: 0,
+									easingRight: 1,
+									easingType: 1,
+									end: 255,
+									endTime: [1, 0, 1],
+									start: 255,
+									startTime: [0, 0, 1],
+								},
+							],
+						},
+					],
+				},
+				blue: null,
+				yellow: null,
+				green: null,
+				purple: null,
+			},
+			shows: [
+				{
+					type: "text",
+					content: "Hello Demo",
+					time: 0,
+					duration: 120,
+					x: 120,
+					y: 220,
+				},
+			],
+		};
+
+		const stopPlayback = PlayerShow(
+			ctx,
+			parseNotation(notationSample),
+		);
+
+		return () => stopPlayback();
 	}, []);
 
 	return (

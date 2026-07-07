@@ -104,6 +104,666 @@
     
 
     
+    <h4 class="name" id="buildNotes"><span class="type-signature"></span>buildNotes<span class="signature">(trackEntries, currentTime, frameDuration)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    根据当前帧生成音符数组。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>trackEntries</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当前有效音轨集合。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>currentTime</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当前帧时间。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>frameDuration</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当前帧时长。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationMethods.ts.html">block/player/method/notationMethods.ts</a>, <a href="block_player_method_notationMethods.ts.html#line231">line 231</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    当前帧对应的音符集合。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const notes = buildNotes([['red', trackLayer]], 0, 16.67);</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="buildNotes"><span class="type-signature"></span>buildNotes<span class="signature">(trackEntries, currentTime, frameDuration)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    根据当前帧生成音符数组。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>trackEntries</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当前有效音轨集合。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>currentTime</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当前帧时间。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>frameDuration</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当前帧时长。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationNote.ts.html">block/player/method/notationNote.ts</a>, <a href="block_player_method_notationNote.ts.html#line68">line 68</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    当前帧对应的音符集合。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const notes = buildNotes([["red", trackLayer]], 0, 16.67);</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="buildShows"><span class="type-signature"></span>buildShows<span class="signature">(shows)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    根据原始演出列表生成当前帧可消费的演出数组。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>shows</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">原始演出列表。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationMethods.ts.html">block/player/method/notationMethods.ts</a>, <a href="block_player_method_notationMethods.ts.html#line293">line 293</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    标准化后的演出数组。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const shows = buildShows([{ type: "text", content: "Hi", x: 0, y: 0, duration: 1000, time: 0 }]);</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="buildShows"><span class="type-signature"></span>buildShows<span class="signature">(shows)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    将原始演出列表转换为播放器可消费的演出数组。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>shows</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">原始演出列表。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationShow.ts.html">block/player/method/notationShow.ts</a>, <a href="block_player_method_notationShow.ts.html#line33">line 33</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    统一格式的演出数组。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const currentShows = buildShows([{ type: "text", content: "Go", x: 0, y: 0, duration: 1000, time: 0 }]);</code></pre>
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="circleBrush"><span class="type-signature"></span>circleBrush<span class="signature">(ctx, config)</span><span class="type-signature"></span></h4>
     
 
@@ -218,7 +878,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pattern_circle.tsx.html">pattern/circle.tsx</a>, <a href="pattern_circle.tsx.html#line7">line 7</a>
+        <a href="general_pattern_circle.tsx.html">general/pattern/circle.tsx</a>, <a href="general_pattern_circle.tsx.html#line7">line 7</a>
     </li></ul></dd>
     
 
@@ -250,6 +910,300 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>const canvas = document.getElementById("canvas") as HTMLCanvasElement;const ctx = canvas.getContext("2d")!;circleBrush(ctx, { x: 50, y: 50, radius: 20 });</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="createNoteEntry"><span class="type-signature"></span>createNoteEntry<span class="signature">(params)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    根据轨道事件生成一个统一格式的音符条目。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>params</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">构造参数集合。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationMethods.ts.html">block/player/method/notationMethods.ts</a>, <a href="block_player_method_notationMethods.ts.html#line163">line 163</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    统一格式的音符对象。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const entry = createNoteEntry({ color: "red", trackLayer: trackLayerValue, currentTime: 0, frameDuration: 16.67 });</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="createNoteEntry"><span class="type-signature"></span>createNoteEntry<span class="signature">(params)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    根据轨道事件生成一个统一格式的音符条目。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>params</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">构造参数集合。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationNote.ts.html">block/player/method/notationNote.ts</a>, <a href="block_player_method_notationNote.ts.html#line8">line 8</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    统一格式的音符对象。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const entry = createNoteEntry({ color: "red", trackLayer, currentTime: 0, frameDuration: 16.67 });</code></pre>
 
 
 
@@ -311,7 +1265,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="frameLoader_animation_fadeIn.tsx.html">frameLoader/animation/fadeIn.tsx</a>, <a href="frameLoader_animation_fadeIn.tsx.html#line51">line 51</a>
+        <a href="general_frameLoader_animation_fadeIn.tsx.html">general/frameLoader/animation/fadeIn.tsx</a>, <a href="general_frameLoader_animation_fadeIn.tsx.html#line51">line 51</a>
     </li></ul></dd>
     
 
@@ -443,7 +1397,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="frameLoader_frameLoader.tsx.html">frameLoader/frameLoader.tsx</a>, <a href="frameLoader_frameLoader.tsx.html#line106">line 106</a>
+        <a href="general_frameLoader_frameLoader.tsx.html">general/frameLoader/frameLoader.tsx</a>, <a href="general_frameLoader_frameLoader.tsx.html#line106">line 106</a>
     </li></ul></dd>
     
 
@@ -603,7 +1557,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="frameLoader_frameLoader.tsx.html">frameLoader/frameLoader.tsx</a>, <a href="frameLoader_frameLoader.tsx.html#line47">line 47</a>
+        <a href="general_frameLoader_frameLoader.tsx.html">general/frameLoader/frameLoader.tsx</a>, <a href="general_frameLoader_frameLoader.tsx.html#line47">line 47</a>
     </li></ul></dd>
     
 
@@ -645,6 +1599,821 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>const paintConfig = {};fadeIn(paintConfig);slide(paintConfig, 0, 100, 0, 50, 30);const cancel = frameLoader(canvas, [  {    config: paintConfig,    handler(ctx, config) {      ctx.globalAlpha = config.alpha as number;      ctx.fillRect(config.x as number, config.y as number, 10, 10);    },  },]);// 停止动画cancel();</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getFrameCount"><span class="type-signature"></span>getFrameCount<span class="signature">(notation, frameDuration)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    计算需要生成多少帧才能覆盖所有演出时长。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>notation</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">原始谱面数据。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>frameDuration</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">单帧时长。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationFrame.ts.html">block/player/method/notationFrame.ts</a>, <a href="block_player_method_notationFrame.ts.html#line56">line 56</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    需要生成的总帧数。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const frameCount = getFrameCount(notation, 16.67);console.log(frameCount);</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getFrameCount"><span class="type-signature"></span>getFrameCount<span class="signature">(notation, frameDuration)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    计算需要生成多少帧才能覆盖所有演出时长。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>notation</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">原始谱面数据。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>frameDuration</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">单帧时长。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationMethods.ts.html">block/player/method/notationMethods.ts</a>, <a href="block_player_method_notationMethods.ts.html#line128">line 128</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    需要生成的总帧数。
+</div>
+
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getFrameDuration"><span class="type-signature"></span>getFrameDuration<span class="signature">(frameRate)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    根据帧率换算每帧所对应的毫秒时长。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>frameRate</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当前使用的帧率。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationFrame.ts.html">block/player/method/notationFrame.ts</a>, <a href="block_player_method_notationFrame.ts.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    单帧毫秒时长。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const duration = getFrameDuration(60);console.log(duration);</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getFrameDuration"><span class="type-signature"></span>getFrameDuration<span class="signature">(frameRate)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    根据帧率换算每帧所对应的毫秒时长。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>frameRate</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当前使用的帧率。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationMethods.ts.html">block/player/method/notationMethods.ts</a>, <a href="block_player_method_notationMethods.ts.html#line102">line 102</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    单帧毫秒时长。
+</div>
+
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getNotationFrameRate"><span class="type-signature"></span>getNotationFrameRate<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    读取谱面播放的目标帧率，优先使用全局变量，其次使用环境变量。
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationFrame.ts.html">block/player/method/notationFrame.ts</a>, <a href="block_player_method_notationFrame.ts.html#line3">line 3</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    当前使用的帧率。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const fps = getNotationFrameRate();console.log(fps);</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getNotationFrameRate"><span class="type-signature"></span>getNotationFrameRate<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    读取谱面播放的目标帧率，优先使用全局变量，其次使用环境变量。
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationMethods.ts.html">block/player/method/notationMethods.ts</a>, <a href="block_player_method_notationMethods.ts.html#line84">line 84</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    当前使用的帧率。
+</div>
+
+
+
+    
+
+
 
 
 
@@ -768,7 +2537,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="function_segmentDirection.ts.html">function/segmentDirection.ts</a>, <a href="function_segmentDirection.ts.html#line131">line 131</a>
+        <a href="general_function_segmentDirection.ts.html">general/function/segmentDirection.ts</a>, <a href="general_function_segmentDirection.ts.html#line131">line 131</a>
     </li></ul></dd>
     
 
@@ -964,7 +2733,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="function_segmentDirection.ts.html">function/segmentDirection.ts</a>, <a href="function_segmentDirection.ts.html#line108">line 108</a>
+        <a href="general_function_segmentDirection.ts.html">general/function/segmentDirection.ts</a>, <a href="general_function_segmentDirection.ts.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -1106,7 +2875,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="function_segmentDirection.ts.html">function/segmentDirection.ts</a>, <a href="function_segmentDirection.ts.html#line80">line 80</a>
+        <a href="general_function_segmentDirection.ts.html">general/function/segmentDirection.ts</a>, <a href="general_function_segmentDirection.ts.html#line80">line 80</a>
     </li></ul></dd>
     
 
@@ -1248,7 +3017,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="function_segmentDirection.ts.html">function/segmentDirection.ts</a>, <a href="function_segmentDirection.ts.html#line63">line 63</a>
+        <a href="general_function_segmentDirection.ts.html">general/function/segmentDirection.ts</a>, <a href="general_function_segmentDirection.ts.html#line63">line 63</a>
     </li></ul></dd>
     
 
@@ -1278,6 +3047,584 @@
         
 <div class="param-desc">
     返回线段向量 dx、dy
+</div>
+
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getTotalNotationTime"><span class="type-signature"></span>getTotalNotationTime<span class="signature">(notation)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    统计谱面中所有演出所覆盖的总时长。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>notation</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">原始谱面数据。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationFrame.ts.html">block/player/method/notationFrame.ts</a>, <a href="block_player_method_notationFrame.ts.html#line38">line 38</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    最大结束时间。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const totalTime = getTotalNotationTime(notation);console.log(totalTime);</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getTotalNotationTime"><span class="type-signature"></span>getTotalNotationTime<span class="signature">(notation)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    统计谱面中所有演出所覆盖的总时长。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>notation</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">原始谱面数据。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationMethods.ts.html">block/player/method/notationMethods.ts</a>, <a href="block_player_method_notationMethods.ts.html#line113">line 113</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    最大结束时间。
+</div>
+
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getTrackEntries"><span class="type-signature"></span>getTrackEntries<span class="signature">(notation)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    过滤出所有非空音轨，方便按轨道生成音符数据。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>notation</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">原始谱面数据。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationFrame.ts.html">block/player/method/notationFrame.ts</a>, <a href="block_player_method_notationFrame.ts.html#line76">line 76</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    以颜色名为键的有效音轨列表。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const tracks = getTrackEntries(notation);console.log(tracks[0]);</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getTrackEntries"><span class="type-signature"></span>getTrackEntries<span class="signature">(notation)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    过滤出所有非空音轨，方便按轨道生成音符数据。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>notation</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">原始谱面数据。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationMethods.ts.html">block/player/method/notationMethods.ts</a>, <a href="block_player_method_notationMethods.ts.html#line145">line 145</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    以颜色名为键的有效音轨列表。
 </div>
 
 
@@ -1346,7 +3693,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="frameLoader_frameLoader.tsx.html">frameLoader/frameLoader.tsx</a>, <a href="frameLoader_frameLoader.tsx.html#line1">line 1</a>
+        <a href="general_frameLoader_frameLoader.tsx.html">general/frameLoader/frameLoader.tsx</a>, <a href="general_frameLoader_frameLoader.tsx.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -1532,7 +3879,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="frameLoader_animation_fadeIn.tsx.html">frameLoader/animation/fadeIn.tsx</a>, <a href="frameLoader_animation_fadeIn.tsx.html#line1">line 1</a>
+        <a href="general_frameLoader_animation_fadeIn.tsx.html">general/frameLoader/animation/fadeIn.tsx</a>, <a href="general_frameLoader_animation_fadeIn.tsx.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -1761,7 +4108,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="frameLoader_animation_slide.tsx.html">frameLoader/animation/slide.tsx</a>, <a href="frameLoader_animation_slide.tsx.html#line1">line 1</a>
+        <a href="general_frameLoader_animation_slide.tsx.html">general/frameLoader/animation/slide.tsx</a>, <a href="general_frameLoader_animation_slide.tsx.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -1849,7 +4196,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="function_segmentDirection.ts.html">function/segmentDirection.ts</a>, <a href="function_segmentDirection.ts.html#line47">line 47</a>
+        <a href="general_function_segmentDirection.ts.html">general/function/segmentDirection.ts</a>, <a href="general_function_segmentDirection.ts.html#line47">line 47</a>
     </li></ul></dd>
     
 
@@ -1876,6 +4223,448 @@
 
 
 
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="parseNotation"><span class="type-signature"></span>parseNotation<span class="signature">(notation)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    逐帧生成解析后的谱面数据。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>notation</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">原始谱面数据。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationMethods.ts.html">block/player/method/notationMethods.ts</a>, <a href="block_player_method_notationMethods.ts.html#line323">line 323</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    生成器，按帧输出 ParsedNotationFrame。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const frameIterator = parseNotation(notation);
+const frame = frameIterator.next().value;</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="resolveTextEffect"><span class="type-signature"></span>resolveTextEffect<span class="signature">(show)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    将文字演出映射为统一的效果描述，方便渲染器读取。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>show</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">原始演出对象。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationMethods.ts.html">block/player/method/notationMethods.ts</a>, <a href="block_player_method_notationMethods.ts.html#line260">line 260</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    标准化后的演出配置。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const resolved = resolveTextEffect({ type: "text", content: "Hello", x: 0, y: 0, duration: 1000, time: 0 });</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="resolveTextEffect"><span class="type-signature"></span>resolveTextEffect<span class="signature">(show)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    将文本演出对象映射为统一的效果描述。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>show</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">原始演出对象。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_method_notationShow.ts.html">block/player/method/notationShow.ts</a>, <a href="block_player_method_notationShow.ts.html#line5">line 5</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    包含效果名与配置项的对象。
+</div>
+
+
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>const result = resolveTextEffect({ type: "text", content: "Hello", x: 0, y: 0, duration: 1000, time: 0 });</code></pre>
 
 
 
@@ -1933,7 +4722,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="function_setColor.tsx.html">function/setColor.tsx</a>, <a href="function_setColor.tsx.html#line3">line 3</a>
+        <a href="general_function_setColor.tsx.html">general/function/setColor.tsx</a>, <a href="general_function_setColor.tsx.html#line3">line 3</a>
     </li></ul></dd>
     
 
@@ -2021,7 +4810,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="frameLoader_animation_slide.tsx.html">frameLoader/animation/slide.tsx</a>, <a href="frameLoader_animation_slide.tsx.html#line52">line 52</a>
+        <a href="general_frameLoader_animation_slide.tsx.html">general/frameLoader/animation/slide.tsx</a>, <a href="general_frameLoader_animation_slide.tsx.html#line52">line 52</a>
     </li></ul></dd>
     
 
@@ -2067,13 +4856,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FunctionPipe.html">FunctionPipe</a></li><li><a href="Queue.html">Queue</a></li><li><a href="Stack.html">Stack</a></li></ul><h3>Global</h3><ul><li><a href="global.html#circleBrush">circleBrush</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#frameGenerater">frameGenerater</a></li><li><a href="global.html#frameLoader">frameLoader</a></li><li><a href="global.html#getPathEndPoint">getPathEndPoint</a></li><li><a href="global.html#getPointAlongDirection">getPointAlongDirection</a></li><li><a href="global.html#getSegmentDirection">getSegmentDirection</a></li><li><a href="global.html#getSegmentVector">getSegmentVector</a></li><li><a href="global.html#isIteratorWithCurrent">isIteratorWithCurrent</a></li><li><a href="global.html#isNumberIterator">isNumberIterator</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#setColor">setColor</a></li><li><a href="global.html#slide">slide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FunctionPipe.html">FunctionPipe</a></li><li><a href="Queue.html">Queue</a></li><li><a href="Stack.html">Stack</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildNotes">buildNotes</a></li><li><a href="global.html#buildShows">buildShows</a></li><li><a href="global.html#circleBrush">circleBrush</a></li><li><a href="global.html#createNoteEntry">createNoteEntry</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#frameGenerater">frameGenerater</a></li><li><a href="global.html#frameLoader">frameLoader</a></li><li><a href="global.html#getFrameCount">getFrameCount</a></li><li><a href="global.html#getFrameDuration">getFrameDuration</a></li><li><a href="global.html#getNotationFrameRate">getNotationFrameRate</a></li><li><a href="global.html#getPathEndPoint">getPathEndPoint</a></li><li><a href="global.html#getPointAlongDirection">getPointAlongDirection</a></li><li><a href="global.html#getSegmentDirection">getSegmentDirection</a></li><li><a href="global.html#getSegmentVector">getSegmentVector</a></li><li><a href="global.html#getTotalNotationTime">getTotalNotationTime</a></li><li><a href="global.html#getTrackEntries">getTrackEntries</a></li><li><a href="global.html#isIteratorWithCurrent">isIteratorWithCurrent</a></li><li><a href="global.html#isNumberIterator">isNumberIterator</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#parseNotation">parseNotation</a></li><li><a href="global.html#resolveTextEffect">resolveTextEffect</a></li><li><a href="global.html#setColor">setColor</a></li><li><a href="global.html#slide">slide</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Jun 26 2026 17:49:00 GMT+0800 (新加坡标准时间)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jul 07 2026 16:48:19 GMT+0800 (新加坡标准时间)
 </footer>
 
 <script> prettyPrint(); </script>

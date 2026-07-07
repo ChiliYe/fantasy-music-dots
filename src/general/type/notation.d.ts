@@ -34,7 +34,16 @@ interface notationEventLayer {
 	speedEvents?: Array<notationEvent>;
 }
 
+/** 音轨键位类型。
+ * 1：点键
+ * 2：触键
+ * 3：长弦
+ * 4：尾点
+ */
+type notationTrackKeyType = 1 | 2 | 3 | 4;
+
 interface notationTrackLayer {
+	/**轨道键位类型。1=点键，2=触键，3=长弦，4=尾点*/ key?: notationTrackKeyType;
 	/**事件图层*/ eventLayers: Array<notationEventLayer>;
 }
 
@@ -47,7 +56,7 @@ interface notationTrackInfo {
 }
 
 interface notationShowInfo {
-	/**表演类型*/ type: string;
+	/**表演类型*/ type: /**文本*/ "text";
 	/**表演内容*/ content: string;
 	/**表演时间*/ time: number;
 	/**表演持续时间*/ duration: number;
