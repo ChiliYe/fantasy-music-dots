@@ -147,3 +147,24 @@ export function getPathEndPoint(
 		distance,
 	);
 }
+
+/**
+ * 得到线段特定位置的坐标
+ * @param config 线段起点和终点配置
+ * @param position 位置参数，范围为 0 到 1，表示线段的起点到终点的比例
+ * @returns 返回线段上指定位置的坐标
+ */
+export function getPointOnSegment(
+	config: SegmentConfig,
+	position: number,
+): { x: number; y: number } {
+	const clampedPosition = Math.max(
+		0,
+		Math.min(1, position),
+	);
+	const { dx, dy } = getSegmentVector(config);
+	return {
+		x: config.startX + dx * clampedPosition,
+		y: config.startY + dy * clampedPosition,
+	};
+}

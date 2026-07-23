@@ -10,7 +10,7 @@
 import {
 	getPathEndPoint,
 	getSegmentDirection,
-} from "../function/segmentDirection";
+} from "../stl/segmentDirection";
 import { setColor } from "../function/setColor";
 
 export function verticalLineBrush(
@@ -26,7 +26,7 @@ export function verticalLineBrush(
 		/**颜色*/ color?: string | [number, number, number];
 	},
 ) {
-	ctx.restore();
+	ctx.save();
 	ctx.beginPath();
 	setColor(ctx, config.color);
 	const duration = getSegmentDirection({
@@ -57,6 +57,6 @@ export function verticalLineBrush(
 	ctx.moveTo(startX, startY);
 	ctx.lineTo(endX, endY);
 	ctx.closePath();
-	ctx.reset();
 	ctx.stroke();
+	ctx.restore();
 }

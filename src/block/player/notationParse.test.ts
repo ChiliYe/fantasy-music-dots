@@ -1,7 +1,7 @@
 /** @format */
 
 import { describe, expect, it } from "vitest";
-import { parseNotation } from "./notationParse";
+import { parseNotation } from "./notationPlay";
 
 describe("parseNotation", () => {
 	it("should generate frames and convert shows into text effects", () => {
