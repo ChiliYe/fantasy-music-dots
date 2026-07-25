@@ -51,6 +51,15 @@ export default function CanvasTest() {
 					400,
 					260,
 				);
+				module.drawHoldNote(
+					ctx,
+					"#ffff00",
+					100,
+					300,
+					100,
+					260,
+					40,
+				);
 			},
 		);
 

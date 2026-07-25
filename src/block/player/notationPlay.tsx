@@ -4,6 +4,7 @@ import type { ParsedNotationFrame } from "./method/notationTypes";
 import { circleBrush } from "../../general/pattern/circle";
 import { forkLineBrush } from "../../general/pattern/forkLine";
 import { verticalLineBrush } from "../../general/pattern/verticalLine";
+import { waveBrush } from "../../general/pattern/wave";
 export { parseNotation } from "./method/notationMethods";
 
 const colorMap: Record<string, string> = {
@@ -68,12 +69,94 @@ export function drawTapNote(
 }
 
 /**
- * 绘制hold note
- * @param ctx Canvas 渲染上下文
- * @param color note 的颜色
- * @param x note 的 x 坐标
- * @param y note 的 y 坐标
+ * 生成一条从锚点出发、沿给定方向延伸的波浪路径点。
+ *
+ * 该函数会把一条直线看作轨道基准线，并沿着轨道法线方向施加正弦偏移，
+ * 从而得到视觉上像“连续波形”的路径点。常用于绘制 hold note 或其他节奏类轨迹。
+ *
+ * @param anchorX 锚点 x 位置
+ * @param anchorY 锚点 y 位置
+ * @param trackDirX 轨道方向向量 x
+ * @param trackDirY 轨道方向向量 y
+ * @param length 波浪在轨道上占用的长度
+ * @param amplitude 波浪振幅，值越大波峰越高
+ * @param wavelength 波长，值越大波形越稀疏
+ * @param steps 采样点数量，越多曲线越平滑
+ * @returns 包含一组波浪点的数组，按绘制顺序排列
  */
+export function buildWavePoints(
+	anchorX: number,
+	anchorY: number,
+	trackDirX: number,
+	trackDirY: number,
+	length: number,
+	amplitude = 5,
+	wavelength = 10,
+	steps = 90,
+) {
+	const points: Array<{ x: number; y: number }> = [];
+	const trackLength =
+		Math.hypot(trackDirX, trackDirY) || 1;
+	const unitX = trackDirX / trackLength;
+	const unitY = trackDirY / trackLength;
+	const normalX = -unitY;
+	const normalY = unitX;
+	const cycles = length / Math.max(wavelength, 1);
+
+	for (let i = 0; i <= steps; i++) {
+		const t = i / steps;
+		const offsetAlongTrack = t * length;
+		const x = anchorX + unitX * offsetAlongTrack;
+		const y = anchorY + unitY * offsetAlongTrack;
+		const waveOffset =
+			Math.sin(t * Math.PI * 2 * cycles) * amplitude;
+		points.push({
+			x: x + normalX * waveOffset,
+			y: y + normalY * waveOffset,
+		});
+	}
+
+	return points;
+}
+
+/**
+ * 绘制 hold note 的波浪线。
+ *
+ * 以给定锚点为起点，沿着轨道方向绘制一段指定长度的波浪线，
+ * 适用于音乐节奏类游戏中的长按状态展示。
+ *
+ * @param ctx Canvas 渲染上下文
+ * @param color 波浪颜色
+ * @param x 锚点 x 坐标
+ * @param y 锚点 y 坐标
+ * @param trackDirX 轨道方向向量 x
+ * @param trackDirY 轨道方向向量 y
+ * @param length 波浪在轨道上占用的长度
+ *
+ * @example
+ * const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+ * const ctx = canvas.getContext("2d")!;
+ * drawHoldNote(ctx, "#ff0000", 100, 100, 1, 0, 80);
+ */
+export function drawHoldNote(
+	ctx: CanvasRenderingContext2D,
+	color: string,
+	x: number,
+	y: number,
+	trackDirX: number,
+	trackDirY: number,
+	length: number,
+) {
+	waveBrush(ctx, {
+		x,
+		y,
+		directionX: trackDirX,
+		directionY: trackDirY,
+		length,
+		color,
+	});
+}
+
 /**
  * 绘制drag note
  * @param ctx Canvas 渲染上下文
@@ -182,6 +265,17 @@ export function drawNote(
 				track.startY,
 				track.endX,
 				track.endY,
+			);
+			break;
+		case 3: // hold note
+			drawHoldNote(
+				ctx,
+				color,
+				track.startX,
+				track.startY,
+				track.endX - track.startX,
+				track.endY - track.startY,
+				40,
 			);
 			break;
 		// Add more cases for other note types if needed

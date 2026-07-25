@@ -1,9 +1,39 @@
 /** @format */
 
 import { describe, expect, it } from "vitest";
-import { parseNotation } from "./notationPlay";
+import {
+	buildWavePoints,
+	parseNotation,
+} from "./notationPlay";
 
 describe("parseNotation", () => {
+	it("buildWavePoints should follow the track direction", () => {
+		const points = buildWavePoints(
+			0,
+			0,
+			1,
+			0,
+			100,
+			8,
+			20,
+		);
+
+		expect(points[0].x).toBe(0);
+		expect(points[0].y).toBeCloseTo(0, 10);
+		expect(points.at(-1)?.x).toBe(100);
+		expect(points.at(-1)?.y).toBeCloseTo(0, 10);
+		expect(points.some((point) => point.y !== 0)).toBe(
+			true,
+		);
+		expect(
+			points.every(
+				(point, index) =>
+					index === 0 ||
+					point.x >= points[index - 1].x,
+			),
+		).toBe(true);
+	});
+
 	it("should generate frames and convert shows into text effects", () => {
 		(
 			globalThis as typeof globalThis & {
