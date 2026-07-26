@@ -42,9 +42,27 @@ interface notationEventLayer {
  */
 type notationTrackKeyType = 1 | 2 | 3 | 4;
 
+type trackColor =
+	| "red"
+	| "blue"
+	| "green"
+	| "yellow"
+	| "purple";
+
+/**单个note */
+interface notationNoteInfo {
+	/**类型 */ type: notationTrackKeyType;
+	/**节拍数[小节,拍,拍内] */ beat: [
+		number,
+		number,
+		number,
+	];
+	/**长度 */ length: number;
+}
+
 interface notationTrackLayer {
-	/**轨道键位类型。1=点键，2=触键，3=长弦，4=尾点*/ key?: notationTrackKeyType;
 	/**事件图层*/ eventLayers: Array<notationEventLayer>;
+	/**note数组 */ notes: Array<notationNoteInfo>;
 }
 
 interface notationTrackInfo {

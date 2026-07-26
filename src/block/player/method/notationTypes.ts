@@ -18,10 +18,11 @@ export interface ParsedNotationEffect {
  */
 export interface ParsedNotationNote {
 	color: string;
-	layer: string;
+	layer: trackColor;
 	key?: notationTrackKeyType;
 	comment: string;
 	effect?: ParsedNotationEffect;
+	currentTime: number;
 }
 
 /**

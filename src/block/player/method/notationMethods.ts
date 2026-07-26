@@ -34,7 +34,7 @@ export interface ParsedNotationNote {
 	/** 音符颜色。 */
 	color: string;
 	/** 所属层级。 */
-	layer: string;
+	layer: trackColor;
 	/** 键位类型。 */
 	key?: notationTrackKeyType;
 	/** 备注说明。 */
@@ -149,10 +149,10 @@ export function getFrameCount(
  */
 export function getTrackEntries(
 	notation: notationFormat,
-): Array<[string, notationTrackLayer]> {
+): Array<[trackColor, notationTrackLayer]> {
 	return Object.entries(notation.track ?? {}).filter(
 		([, layer]) => layer !== null,
-	) as Array<[string, notationTrackLayer]>;
+	) as Array<[trackColor, notationTrackLayer]>;
 }
 
 /**
@@ -168,7 +168,7 @@ export function getTrackEntries(
  * const entry = createNoteEntry({ color: "red", trackLayer: trackLayerValue, currentTime: 0, frameDuration: 16.67 });
  */
 function createNoteEntry(params: {
-	color: string;
+	color: trackColor;
 	trackLayer: notationTrackLayer;
 	currentTime: number;
 	frameDuration: number;
@@ -205,7 +205,6 @@ function createNoteEntry(params: {
 	return {
 		color,
 		layer: color,
-		key: trackLayer.key,
 		comment:
 			eventSummary.length > 0
 				? `// ${color} note with ${eventSummary.slice(0, 3).join(",")}`
@@ -238,7 +237,7 @@ function createNoteEntry(params: {
  * const notes = buildNotes([['red', trackLayer]], 0, 16.67);
  */
 export function buildNotes(
-	trackEntries: Array<[string, notationTrackLayer]>,
+	trackEntries: Array<[trackColor, notationTrackLayer]>,
 	currentTime: number,
 	frameDuration: number,
 ): ParsedNotationFrame["notes"] {
@@ -252,11 +251,6 @@ export function buildNotes(
 	);
 }
 
-/**
- * 将文字演出映射为统一的效果描述，方便渲染器读取。
- * @param show 原始演出对象。
- * @returns 标准化后的演出配置。
- */
 /**
  * 将文字演出映射为统一的效果描述，方便渲染器读取。
  * @param show 原始演出对象。
@@ -330,7 +324,7 @@ export function buildShows(
  */
 export function* parseNotation(
 	notation: notationFormat,
-): Generator<ParsedNotationFrame> {
+): Generator<ParsedNotationFrame, void, unknown> {
 	const frameDuration = getFrameDuration();
 	const frameCount = getFrameCount(
 		notation,

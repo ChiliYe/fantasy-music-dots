@@ -13,7 +13,7 @@ import type {
  * const entry = createNoteEntry({ color: "red", trackLayer, currentTime: 0, frameDuration: 16.67 });
  */
 function createNoteEntry(params: {
-	color: string;
+	color: trackColor;
 	trackLayer: notationTrackLayer;
 	currentTime: number;
 	frameDuration: number;
@@ -49,11 +49,11 @@ function createNoteEntry(params: {
 	return {
 		color,
 		layer: color,
-		key: trackLayer.key,
 		comment:
 			eventSummary.length > 0
 				? `// ${color} note with ${eventSummary.slice(0, 3).join(",")}`
 				: `// ${color} note`,
+		currentTime,
 		effect:
 			eventSummary.length > 0
 				? {
@@ -75,7 +75,7 @@ function createNoteEntry(params: {
  * const notes = buildNotes([["red", trackLayer]], 0, 16.67);
  */
 export function buildNotes(
-	trackEntries: Array<[string, notationTrackLayer]>,
+	trackEntries: Array<[trackColor, notationTrackLayer]>,
 	currentTime: number,
 	frameDuration: number,
 ): ParsedNotationFrame["notes"] {

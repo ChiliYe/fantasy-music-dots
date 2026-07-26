@@ -289,42 +289,24 @@ export function drawNote(
  * @param ctx 绘制上下文
  * @param frame 当前帧数据
  * @param show 表演数据
+ * @param config 绘制配置
+ * @returns 绘制结果对象
  */
 export function drawShow(
 	ctx: CanvasRenderingContext2D,
 	frame: ParsedNotationFrame,
 	show: ParsedNotationFrame["shows"][number],
 ) {
-	const progress = Math.min(
-		Math.max(
-			(frame.time - show.time) /
-				Math.max(show.duration, 1),
-			0,
-		),
-		1,
-	);
-
-	let alpha = 1;
-	let x = show.x;
-	const y = show.y;
-	let scale = 1;
-
-	if (show.effect === "fadeIn") {
-		alpha = progress;
-	} else if (show.effect === "slide") {
-		x = show.x + (1 - progress) * 40;
-	} else if (show.effect === "zoom") {
-		scale = 0.7 + progress * 0.3;
-	}
-
 	ctx.save();
-	ctx.globalAlpha = alpha;
-	ctx.translate(x, y);
-	ctx.scale(scale, scale);
+	ctx.globalAlpha = 1;
+	ctx.translate(show.x, show.y);
+	// ctx.scale(scale, scale);
 	ctx.font = "20px sans-serif";
 	ctx.fillStyle = "#f8f9fa";
 	ctx.fillText(show.content, 0, 0);
 	ctx.restore();
+
+	return { ctx, frame, show };
 }
 
 export function renderFrame(
@@ -340,9 +322,9 @@ export function renderFrame(
 	ctx.fillStyle = "#111827";
 	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-	// frame.notes.forEach((note, index) =>
-	// 	// drawNote(ctx, frame, note, index),
-	// );
+	frame.notes.forEach((note, index) =>
+		drawNote(ctx, frame, note, index),
+	);
 	frame.shows.forEach((s) => drawShow(ctx, frame, s));
 }
 
@@ -355,7 +337,11 @@ export function renderFrame(
  */
 export default function* notationPlay(
 	ctx: CanvasRenderingContext2D,
-	notationGenerator: Iterator<ParsedNotationFrame>,
+	notationGenerator: Generator<
+		ParsedNotationFrame,
+		void,
+		unknown
+	>,
 ): Generator<
 	FrameRenderInfo | null,
 	void,

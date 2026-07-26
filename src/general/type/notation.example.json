@@ -14,7 +14,6 @@
 		"yellow": null,
 		"blue": null,
 		"purple": {
-			"key": 1,
 			"eventLayers": [
 				{
 					"alphaEvents": [
@@ -83,7 +82,12 @@
 						}
 					]
 				}
-			]
+			],
+			"notes": {
+				"type": 0,
+				"beat": [10, 10, 10],
+				"length": 0
+			}
 		}
 	},
 	"shows": [
