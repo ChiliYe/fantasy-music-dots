@@ -20,6 +20,10 @@ export interface ParsedNotationNote {
 	color: string;
 	layer: trackColor;
 	key?: notationTrackKeyType;
+	track: {
+		color: trackColor;
+		layer: notationTrackLayer;
+	};
 	comment: string;
 	effect?: ParsedNotationEffect;
 	currentTime: number;

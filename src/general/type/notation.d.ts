@@ -61,6 +61,7 @@ interface notationNoteInfo {
 }
 
 interface notationTrackLayer {
+	/**键位类型 */ key?: notationTrackKeyType;
 	/**事件图层*/ eventLayers: Array<notationEventLayer>;
 	/**note数组 */ notes: Array<notationNoteInfo>;
 }

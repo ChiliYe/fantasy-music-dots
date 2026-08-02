@@ -12,10 +12,10 @@ type Props = {
  */
 export default class PlayerShow extends React.Component<Props> {
 	render() {
-		const { className, children } = this.props;
+		const { className /*children*/ } = this.props;
 		return (
 			<div className={className ?? "player-show"}>
-				{children}
+				{/* {children} */}
 			</div>
 		);
 	}

@@ -37,6 +37,11 @@ export interface ParsedNotationNote {
 	layer: trackColor;
 	/** 键位类型。 */
 	key?: notationTrackKeyType;
+	/** 原始轨道信息。 */
+	track: {
+		color: trackColor;
+		layer: notationTrackLayer;
+	};
 	/** 备注说明。 */
 	comment: string;
 	/** 关联效果。 */
@@ -205,6 +210,11 @@ function createNoteEntry(params: {
 	return {
 		color,
 		layer: color,
+		key: trackLayer.key ?? trackLayer.notes?.[0]?.type,
+		track: {
+			color,
+			layer: trackLayer,
+		},
 		comment:
 			eventSummary.length > 0
 				? `// ${color} note with ${eventSummary.slice(0, 3).join(",")}`
