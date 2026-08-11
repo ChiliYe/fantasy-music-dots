@@ -1,8 +1,9 @@
 /** @format */
 
 import { useEffect, useRef } from "react";
-import notationPlay, {
+import {
 	parseNotation,
+	startNotationPlayback,
 } from "../block/player/notationPlay";
 import type { ParsedNotationFrame } from "../block/player/method/notationTypes";
 // import PlayerShow from "../block/player/show";
@@ -119,7 +120,7 @@ export default function CanvasTest() {
 			],
 		};
 
-		notationPlay(
+		startNotationPlayback(
 			ctx,
 			// parseNotation's generator types conflict between modules; cast to any to avoid TS incompatibility here
 			parseNotation(notationSample) as Generator<
@@ -127,6 +128,10 @@ export default function CanvasTest() {
 				void,
 				unknown
 			>,
+			{
+				autoPlay: true,
+				frameRate: 60,
+			},
 		);
 
 		// return () => stopPlayback();

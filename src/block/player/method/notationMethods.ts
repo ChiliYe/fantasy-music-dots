@@ -11,80 +11,10 @@
  * console.log(firstFrame.notes.length);
  */
 
-/**
- * 表示一个演出效果的基础信息。
- * @example
- * const effect = { type: "fadeIn", startTime: 0, duration: 500 };
- */
-export interface ParsedNotationEffect {
-	/** 效果类型。 */
-	type: string;
-	/** 开始时间。 */
-	startTime: number;
-	/** 持续时长。 */
-	duration: number;
-}
-
-/**
- * 表示当前帧中的一个音符节点。
- * @example
- * const note = { color: "red", layer: "1", comment: "hit" };
- */
-export interface ParsedNotationNote {
-	/** 音符颜色。 */
-	color: string;
-	/** 所属层级。 */
-	layer: trackColor;
-	/** 键位类型。 */
-	key?: notationTrackKeyType;
-	/** 原始轨道信息。 */
-	track: {
-		color: trackColor;
-		layer: notationTrackLayer;
-	};
-	/** 备注说明。 */
-	comment: string;
-	/** 关联效果。 */
-	effect?: ParsedNotationEffect;
-}
-
-/**
- * 表示当前帧中的一个文字演出节点。
- * @example
- * const show = { type: "text", content: "Hello", effect: "fadeIn", x: 0, y: 0, duration: 1000, time: 0, config: {} };
- */
-export interface ParsedNotationShow {
-	/** 演出类型。 */
-	type: string;
-	/** 文本内容。 */
-	content: string;
-	/** 解析后的效果名。 */
-	effect: string;
-	/** X 轴坐标。 */
-	x: number;
-	/** Y 轴坐标。 */
-	y: number;
-	/** 持续时长。 */
-	duration: number;
-	/** 出现时间。 */
-	time: number;
-	/** 配置项。 */
-	config: Record<string, number | string>;
-}
-
-/**
- * 表示一次被渲染器消费的完整帧数据。
- * @example
- * const frame = { time: 0, notes: [], shows: [] };
- */
-export interface ParsedNotationFrame {
-	/** 当前帧对应的时间。 */
-	time: number;
-	/** 当前帧中的音符信息。 */
-	notes: ParsedNotationNote[];
-	/** 当前帧中的文字演出信息。 */
-	shows: ParsedNotationShow[];
-}
+import type {
+	ParsedNotationFrame,
+	ParsedNotationNote,
+} from "./notationTypes";
 
 /**
  * 读取谱面播放的目标帧率，优先使用全局变量，其次使用环境变量。
@@ -219,6 +149,7 @@ function createNoteEntry(params: {
 			eventSummary.length > 0
 				? `// ${color} note with ${eventSummary.slice(0, 3).join(",")}`
 				: `// ${color} note`,
+		currentTime,
 		effect:
 			eventSummary.length > 0
 				? {
@@ -230,13 +161,6 @@ function createNoteEntry(params: {
 	};
 }
 
-/**
- * 根据当前帧生成音符数组。
- * @param trackEntries 当前有效音轨集合。
- * @param currentTime 当前帧时间。
- * @param frameDuration 当前帧时长。
- * @returns 当前帧对应的音符集合。
- */
 /**
  * 根据当前帧生成音符数组。
  * @param trackEntries 当前有效音轨集合。

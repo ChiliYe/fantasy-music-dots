@@ -49,6 +49,11 @@ function createNoteEntry(params: {
 	return {
 		color,
 		layer: color,
+		key: trackLayer.key ?? trackLayer.notes?.[0]?.type,
+		track: {
+			color,
+			layer: trackLayer,
+		},
 		comment:
 			eventSummary.length > 0
 				? `// ${color} note with ${eventSummary.slice(0, 3).join(",")}`

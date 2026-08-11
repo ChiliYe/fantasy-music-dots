@@ -11,47 +11,17 @@
  */
 
 import type { FrameLoaderConfig } from "../../type/handler";
-
-type NumberIterator = Iterator<number> & {
-	current: number;
-};
-
-function isNumberIterator(
-	value: unknown,
-): value is NumberIterator {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		typeof (value as NumberIterator).next === "function"
-	);
-}
-
-function createNumberIterator(
-	start: number,
-	end: number,
-	counts: number,
-): NumberIterator {
-	let frame = 0;
-	const step = counts === 0 ? 0 : (end - start) / counts;
-	const iterator = {
-		current: start,
-		next() {
-			if (frame < counts) {
-				iterator.current += step;
-				frame += 1;
-			} else {
-				iterator.current = end;
-			}
-			return { value: iterator.current, done: false };
-		},
-	};
-
-	return iterator;
-}
+import { createNumberIterator } from "./numberTransition";
 
 /**
- * slide：接受一个状态对象，返回一个帧生成器。
- * 每次生成器接收 `CanvasRenderingContext2D` 时，会确保传入对象的 `x`/`y` 属性为迭代器。
+ * 为帧加载配置注入平滑移动过渡。
+ * @param origin 原始配置对象。
+ * @param startX 起始 x 位置。
+ * @param endX 结束 x 位置。
+ * @param startY 起始 y 位置。
+ * @param endY 结束 y 位置。
+ * @param counts 过渡帧数。
+ * @returns 注入过渡后的配置对象。
  */
 export function slide(
 	origin: FrameLoaderConfig,
@@ -61,20 +31,8 @@ export function slide(
 	endY: number = 1,
 	counts: number = 30,
 ): FrameLoaderConfig {
-	if (!isNumberIterator(origin.x)) {
-		origin.x = createNumberIterator(
-			startX,
-			endX,
-			counts,
-		);
-	}
-	if (!isNumberIterator(origin.y)) {
-		origin.y = createNumberIterator(
-			startY,
-			endY,
-			counts,
-		);
-	}
+	origin.x = createNumberIterator(startX, endX, counts);
+	origin.y = createNumberIterator(startY, endY, counts);
 
 	return origin as FrameLoaderConfig;
 }

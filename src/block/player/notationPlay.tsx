@@ -1,19 +1,19 @@
 /** @format */
 
 import type { ParsedNotationFrame } from "./method/notationTypes";
-import { circleBrush } from "../../general/pattern/circle";
-import { forkLineBrush } from "../../general/pattern/forkLine";
-import { verticalLineBrush } from "../../general/pattern/verticalLine";
-import { waveBrush } from "../../general/pattern/wave";
+import { getNotationFrameRate } from "./method/notationMethods";
+import { renderFrame } from "./notationRender";
 export { parseNotation } from "./method/notationMethods";
-
-const colorMap: Record<string, string> = {
-	red: "#ea1b1b",
-	blue: "#2c84cd",
-	yellow: "#e0b725",
-	green: "#69db7c",
-	purple: "#b097fc",
-};
+export {
+	buildWavePoints,
+	drawNote,
+	drawShow,
+	drawTapNote,
+	drawHoldNote,
+	drawDragNote,
+	drawTailNote,
+	renderFrame,
+} from "./notationRender";
 
 /**
  * 调用者每次通过 `gen.next(frameIndex)` 传入当前帧索引，生成器会推进到该帧并绘制。
@@ -22,9 +22,13 @@ const colorMap: Record<string, string> = {
 /**
  * 表示当前帧中各类 note 的计数信息。
  */
+/**
+ * 当前帧中不同颜色音符的计数信息。
+ */
 export interface CurrentNoteCount {
 	// 每种颜色的计数（unknownColor 用于未识别的颜色）
 	[color: string]: number;
+	/** 总音符数。 */
 	total: number;
 }
 
@@ -49,283 +53,158 @@ export interface FrameRenderInfo {
 }
 
 /**
- * 绘制tap note
- * @param ctx Canvas 渲染上下文
- * @param color note 的颜色
- * @param x note 的 x 坐标
- * @param y note 的 y 坐标
+ * 播放器的控制选项。
  */
-export function drawTapNote(
-	ctx: CanvasRenderingContext2D,
-	color: string,
-	x: number,
-	y: number,
-) {
-	// 绘制一个圆形表示 tap note
-	// ctx.save();
-
-	circleBrush(ctx, { x: x, y: y, radius: 5, color });
-	// ctx.restore();
+export interface NotationPlaybackOptions {
+	/** 是否在初始化后立即自动播放。 */
+	autoPlay?: boolean;
+	/** 使用的播放帧率。 */
+	frameRate?: number;
+	/** 每次渲染新帧时触发的回调。 */
+	onFrame?: (info: FrameRenderInfo) => void;
+	/** 播放结束时触发的回调。 */
+	onDone?: (info: FrameRenderInfo | null) => void;
 }
 
 /**
- * 生成一条从锚点出发、沿给定方向延伸的波浪路径点。
- *
- * 该函数会把一条直线看作轨道基准线，并沿着轨道法线方向施加正弦偏移，
- * 从而得到视觉上像“连续波形”的路径点。常用于绘制 hold note 或其他节奏类轨迹。
- *
- * @param anchorX 锚点 x 位置
- * @param anchorY 锚点 y 位置
- * @param trackDirX 轨道方向向量 x
- * @param trackDirY 轨道方向向量 y
- * @param length 波浪在轨道上占用的长度
- * @param amplitude 波浪振幅，值越大波峰越高
- * @param wavelength 波长，值越大波形越稀疏
- * @param steps 采样点数量，越多曲线越平滑
- * @returns 包含一组波浪点的数组，按绘制顺序排列
+ * 播放器控制器，暴露播放、暂停、继续、停止及单步推进能力。
  */
-export function buildWavePoints(
-	anchorX: number,
-	anchorY: number,
-	trackDirX: number,
-	trackDirY: number,
-	length: number,
-	amplitude = 5,
-	wavelength = 10,
-	steps = 90,
-) {
-	const points: Array<{ x: number; y: number }> = [];
-	const trackLength =
-		Math.hypot(trackDirX, trackDirY) || 1;
-	const unitX = trackDirX / trackLength;
-	const unitY = trackDirY / trackLength;
-	const normalX = -unitY;
-	const normalY = unitX;
-	const cycles = length / Math.max(wavelength, 1);
+export interface NotationPlaybackController {
+	/** 开始或继续播放。 */
+	play: () => void;
+	/** 暂停当前播放。 */
+	pause: () => void;
+	/** 继续播放。 */
+	resume: () => void;
+	/** 停止播放。 */
+	stop: () => void;
+	/** 推进到指定帧或下一帧。 */
+	step: (targetFrame?: number) => FrameRenderInfo | null;
+}
 
-	for (let i = 0; i <= steps; i++) {
-		const t = i / steps;
-		const offsetAlongTrack = t * length;
-		const x = anchorX + unitX * offsetAlongTrack;
-		const y = anchorY + unitY * offsetAlongTrack;
-		const waveOffset =
-			Math.sin(t * Math.PI * 2 * cycles) * amplitude;
-		points.push({
-			x: x + normalX * waveOffset,
-			y: y + normalY * waveOffset,
-		});
+/**
+ * 启动谱面播放控制器，按帧率自动推进并渲染当前帧。
+ * @param ctx Canvas 渲染上下文
+ * @param notationGenerator 逐帧产出谱面帧的生成器
+ * @param options 播放控制选项
+ * @returns 可用于控制播放状态的控制器
+ */
+export function startNotationPlayback(
+	ctx: CanvasRenderingContext2D,
+	notationGenerator: Generator<
+		ParsedNotationFrame,
+		void,
+		unknown
+	>,
+	options: NotationPlaybackOptions = {},
+): NotationPlaybackController {
+	const frameDuration =
+		1000 /
+		(options.frameRate ?? getNotationFrameRate());
+	const generator = notationPlay(ctx, notationGenerator);
+	let timer: ReturnType<
+		typeof globalThis.setInterval
+	> | null = null;
+	let running = options.autoPlay ?? true;
+	let stopped = false;
+	let latestInfo: FrameRenderInfo | null = null;
+
+	const clearTimer = () => {
+		if (timer !== null) {
+			globalThis.clearInterval(timer);
+			timer = null;
+		}
+	};
+
+	const step = (
+		targetFrame?: number,
+	): FrameRenderInfo | null => {
+		if (stopped) {
+			return null;
+		}
+
+		let result = generator.next(targetFrame);
+		let info = result.value as FrameRenderInfo | null;
+		while (!result.done && info === null) {
+			result = generator.next(targetFrame);
+			info = result.value as FrameRenderInfo | null;
+		}
+		latestInfo = info;
+		if (info) {
+			options.onFrame?.(info);
+		}
+		if (result.done || info?.done) {
+			stopped = true;
+			clearTimer();
+			options.onDone?.(info ?? null);
+		}
+		return info;
+	};
+
+	const schedule = () => {
+		clearTimer();
+		if (stopped || !running) {
+			return;
+		}
+		timer = globalThis.setInterval(() => {
+			if (!running || stopped) {
+				clearTimer();
+				return;
+			}
+			const info = step();
+			if (info?.done) {
+				clearTimer();
+			}
+		}, frameDuration);
+	};
+
+	const play = () => {
+		if (stopped) {
+			return;
+		}
+		latestInfo?.resume?.();
+		running = true;
+		if (!latestInfo) {
+			step();
+		}
+		schedule();
+	};
+
+	const pause = () => {
+		running = false;
+		clearTimer();
+		latestInfo?.pause?.();
+	};
+
+	const resume = () => {
+		if (stopped) {
+			return;
+		}
+		latestInfo?.resume?.();
+		running = true;
+		if (!latestInfo) {
+			step();
+		}
+		schedule();
+	};
+
+	const stop = () => {
+		stopped = true;
+		clearTimer();
+		latestInfo?.quit?.();
+	};
+
+	if (options.autoPlay ?? true) {
+		play();
 	}
 
-	return points;
-}
-
-/**
- * 绘制 hold note 的波浪线。
- *
- * 以给定锚点为起点，沿着轨道方向绘制一段指定长度的波浪线，
- * 适用于音乐节奏类游戏中的长按状态展示。
- *
- * @param ctx Canvas 渲染上下文
- * @param color 波浪颜色
- * @param x 锚点 x 坐标
- * @param y 锚点 y 坐标
- * @param trackDirX 轨道方向向量 x
- * @param trackDirY 轨道方向向量 y
- * @param length 波浪在轨道上占用的长度
- *
- * @example
- * const canvas = document.getElementById("canvas") as HTMLCanvasElement;
- * const ctx = canvas.getContext("2d")!;
- * drawHoldNote(ctx, "#ff0000", 100, 100, 1, 0, 80);
- */
-export function drawHoldNote(
-	ctx: CanvasRenderingContext2D,
-	color: string,
-	x: number,
-	y: number,
-	trackDirX: number,
-	trackDirY: number,
-	length: number,
-) {
-	waveBrush(ctx, {
-		x,
-		y,
-		directionX: trackDirX,
-		directionY: trackDirY,
-		length,
-		color,
-	});
-}
-
-/**
- * 绘制drag note
- * @param ctx Canvas 渲染上下文
- * @param color note 的颜色
- * @param x note 的 x 坐标
- * @param y note 的 y 坐标
- * @param startX track 的起始 x 坐标
- * @param startY track 的起始 y 坐标
- * @param endX track 的结束 x 坐标
- * @param endY track 的结束 y 坐标
- */
-export function drawDragNote(
-	ctx: CanvasRenderingContext2D,
-	color: string,
-	x: number,
-	y: number,
-	startX: number,
-	startY: number,
-	endX: number,
-	endY: number,
-) {
-	// 绘制一个短垂线段表示 drag note
-	// ctx.save();
-	verticalLineBrush(ctx, {
-		x: x,
-		y: y,
-		length: 20,
-		vxs: startX,
-		vxe: endX,
-		vys: startY,
-		vye: endY,
-		color,
-	});
-	// ctx.restore();
-}
-
-/**
- * 绘制tail note
- * @param ctx Canvas 渲染上下文
- * @param color note 的颜色
- * @param x note 的锚点 x 坐标（选在线段上的点）
- * @param y note 的锚点 y 坐标（选在线段上的点）
- * @param startX 参考直线的起始 x 坐标
- * @param startY 参考直线的起始 y 坐标
- * @param endX 参考直线的结束 x 坐标
- * @param endY 参考直线的结束 y 坐标
- */
-export function drawTailNote(
-	ctx: CanvasRenderingContext2D,
-	color: string,
-	x: number,
-	y: number,
-	startX: number,
-	startY: number,
-	endX: number,
-	endY: number,
-) {
-	forkLineBrush(ctx, {
-		start: { x: startX, y: startY },
-		end: { x: endX, y: endY },
-		point: { x, y },
-		length: 8,
-		color,
-	});
-}
-
-/**
- * 绘制单个 note
- * @param ctx Canvas 渲染上下文
- * @param frame 当前帧数据
- * @param track 轨道信息
- * @param note 当前 note 数据
- * @param index 当前 note 在帧中的索引
- */
-export function drawNote(
-	ctx: CanvasRenderingContext2D,
-	frame: ParsedNotationFrame,
-	track: {
-		startX: number;
-		startY: number;
-		endX: number;
-		endY: number;
-	},
-	note: ParsedNotationFrame["notes"][number],
-	index: number,
-) {
-	ctx.save();
-	const color = colorMap[note.color] ?? null;
-	//根据note类型调用相应的函数绘制
-	switch (note.key) {
-		case 1: // tap note
-			drawTapNote(
-				ctx,
-				color,
-				track.startX,
-				track.startY,
-			);
-			break;
-		case 2: // drag note
-			drawDragNote(
-				ctx,
-				color,
-				track.startX,
-				track.startY,
-				track.startX,
-				track.startY,
-				track.endX,
-				track.endY,
-			);
-			break;
-		case 3: // hold note
-			drawHoldNote(
-				ctx,
-				color,
-				track.startX,
-				track.startY,
-				track.endX - track.startX,
-				track.endY - track.startY,
-				40,
-			);
-			break;
-		// Add more cases for other note types if needed
-	}
-	ctx.restore();
-	return { ctx, frame, track, note, index };
-}
-
-/**
- * 绘制单个 show
- * @param ctx 绘制上下文
- * @param frame 当前帧数据
- * @param show 表演数据
- * @param config 绘制配置
- * @returns 绘制结果对象
- */
-export function drawShow(
-	ctx: CanvasRenderingContext2D,
-	frame: ParsedNotationFrame,
-	show: ParsedNotationFrame["shows"][number],
-) {
-	ctx.save();
-	ctx.globalAlpha = 1;
-	ctx.translate(show.x, show.y);
-	// ctx.scale(scale, scale);
-	ctx.font = "20px sans-serif";
-	ctx.fillStyle = "#f8f9fa";
-	ctx.fillText(show.content, 0, 0);
-	ctx.restore();
-
-	return { ctx, frame, show };
-}
-
-export function renderFrame(
-	ctx: CanvasRenderingContext2D,
-	frame: ParsedNotationFrame,
-) {
-	ctx.clearRect(
-		0,
-		0,
-		ctx.canvas.width,
-		ctx.canvas.height,
-	);
-	ctx.fillStyle = "#111827";
-	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-	frame.notes.forEach((note, index) =>
-		drawNote(ctx, frame, note, index),
-	);
-	frame.shows.forEach((s) => drawShow(ctx, frame, s));
+	return {
+		play,
+		pause,
+		resume,
+		stop,
+		step,
+	};
 }
 
 /**

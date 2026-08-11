@@ -1,10 +1,22 @@
 /** @format */
 
-import { describe, expect, it } from "vitest";
+import {
+	afterEach,
+	describe,
+	expect,
+	it,
+	vi,
+} from "vitest";
 import {
 	buildWavePoints,
 	parseNotation,
+	renderFrame,
+	startNotationPlayback,
 } from "./notationPlay";
+
+afterEach(() => {
+	vi.useRealTimers();
+});
 
 describe("parseNotation", () => {
 	it("buildWavePoints should follow the track direction", () => {
@@ -94,5 +106,127 @@ describe("parseNotation", () => {
 		expect(frames[0].notes[0].key).toBe(1);
 		expect(frames[0].shows[0].effect).toBe("fadeIn");
 		expect(frames[0].shows[0].content).toBe("hello");
+	});
+
+	it("should apply fade-in transition effects automatically", () => {
+		const ctx = {
+			canvas: { width: 300, height: 300 },
+			clearRect: vi.fn(),
+			fillRect: vi.fn(),
+			save: vi.fn(),
+			restore: vi.fn(),
+			translate: vi.fn(),
+			fillText: vi.fn(),
+			beginPath: vi.fn(),
+			moveTo: vi.fn(),
+			lineTo: vi.fn(),
+			stroke: vi.fn(),
+			closePath: vi.fn(),
+			arc: vi.fn(),
+			setLineDash: vi.fn(),
+			strokeStyle: "",
+			fillStyle: "",
+			font: "",
+			globalAlpha: 1,
+		} as unknown as CanvasRenderingContext2D;
+
+		const notation: notationFormat = {
+			v: "1.0",
+			meta: {
+				noter: "test",
+				painter: "test",
+				composer: "test",
+				offset: 0,
+				notesNum: 1,
+				bpm: 120,
+			},
+			track: {
+				red: null,
+				blue: null,
+				yellow: null,
+				green: null,
+				purple: null,
+			},
+			shows: [
+				{
+					type: "text",
+					content: "hello",
+					time: 0,
+					duration: 100,
+					x: 10,
+					y: 20,
+				},
+			],
+		};
+
+		const frame = parseNotation(notation).next().value;
+		renderFrame(ctx, frame!);
+
+		expect(ctx.globalAlpha).toBe(0);
+	});
+
+	it("should auto advance frames over time", () => {
+		vi.useFakeTimers();
+		const ctx = {
+			canvas: { width: 300, height: 300 },
+			clearRect: vi.fn(),
+			fillRect: vi.fn(),
+			save: vi.fn(),
+			restore: vi.fn(),
+			translate: vi.fn(),
+			fillText: vi.fn(),
+			beginPath: vi.fn(),
+			moveTo: vi.fn(),
+			lineTo: vi.fn(),
+			stroke: vi.fn(),
+			closePath: vi.fn(),
+			arc: vi.fn(),
+			setLineDash: vi.fn(),
+			strokeStyle: "",
+			fillStyle: "",
+			font: "",
+			globalAlpha: 1,
+		} as unknown as CanvasRenderingContext2D;
+
+		const notation: notationFormat = {
+			v: "1.0",
+			meta: {
+				noter: "test",
+				painter: "test",
+				composer: "test",
+				offset: 0,
+				notesNum: 1,
+				bpm: 120,
+			},
+			track: {
+				red: null,
+				blue: null,
+				yellow: null,
+				green: null,
+				purple: null,
+			},
+			shows: [],
+		};
+
+		const frames: number[] = [];
+		const playback = startNotationPlayback(
+			ctx,
+			parseNotation(notation) as Generator<
+				import("./method/notationTypes").ParsedNotationFrame,
+				void,
+				unknown
+			>,
+			{
+				autoPlay: true,
+				frameRate: 60,
+				onFrame: (info) =>
+					frames.push(info.frameIndex),
+			},
+		);
+
+		vi.advanceTimersByTime(1000);
+
+		expect(frames.length).toBeGreaterThan(0);
+		playback.stop();
 	});
 });
