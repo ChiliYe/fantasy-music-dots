@@ -1,0 +1,18 @@
+<svg version="1.1"
+   baseProfile="full"
+   width="600" height="250"
+   xmlns="http://www.w3.org/2000/svg">
+
+<line x1="25" x2="175" y1="100" y2="100" stroke="black" stroke-width="3" />
+<path d="M100 70 A20 50 0 0 0 60 75 L60 200" fill="none" stroke="black" stroke-width="3" />
+<circle cx="130" cy="150" r="40" fill="none" stroke="black" stroke-width="1" />
+<line x1="170" x2="170" y1="100" y2="200" stroke="black" />
+<path d="M170 170 A10 10 0 0 1 200 170 L200 200" fill="none" stroke="black" />
+<path d="M220 200 L260 50 L290 100 L320 50 L360 200" fill="none" stroke="black" stroke-width="3"/>
+<circle cx="400" cy="150" r="30" fill="none" stroke="black" />
+<line x1="430" x2="430" y1="70" y2="170" stroke="black" stroke-width="1" />
+<circle cx="480" cy="150" r="30" fill="none" stroke="black" />
+<circle cx="480" cy="150" r="5" fill="black" stroke="black" />
+<line x1="450" x2="580" y1="100" y2="100" stroke="black" stroke-width="3" />
+<path d="M530 40 L530 190 A20 30 0 1 0 570 160" fill="none" stroke="black" stroke-width="3" />
+</svg>
