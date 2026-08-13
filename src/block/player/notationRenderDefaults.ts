@@ -1,5 +1,7 @@
 /** @format */
 
+// 这一模块只负责提供默认的渲染样式和轨道几何参数，避免渲染逻辑硬编码具体值。
+
 export const DEFAULT_NOTE_COLOR_MAP: Record<
 	string,
 	string
@@ -55,24 +57,29 @@ const DEFAULT_TRACK_GEOMETRY: Record<
 	},
 };
 
+// 通过颜色枚举拿到对应的渲染色值，未命中时返回 null 交给调用方兜底处理。
 export function resolveDefaultNoteColor(
 	color: string,
 ): string | null {
 	return DEFAULT_NOTE_COLOR_MAP[color] ?? null;
 }
 
+// 返回音符圆形半径，统一控制视觉大小。
 export function getDefaultNoteRadius(): number {
 	return DEFAULT_NOTE_RADIUS;
 }
 
+// 返回 hold 线长度，决定长按轨道的视觉延伸长度。
 export function getDefaultHoldLength(): number {
 	return DEFAULT_HOLD_LINE_LENGTH;
 }
 
+// 返回 drag 方向线的默认长度，用于连接滑动路径。
 export function getDefaultDragLineLength(): number {
 	return DEFAULT_DRAG_LINE_LENGTH;
 }
 
+// 返回尾点长度，控制弹尾与分叉线的默认尺寸。
 export function getDefaultTailPointLength(): number {
 	return DEFAULT_TAIL_POINT_LENGTH;
 }
@@ -89,6 +96,7 @@ export function getDefaultBackgroundFillStyle(): string {
 	return DEFAULT_BACKGROUND_FILL_STYLE;
 }
 
+// 把轨道描述转换成渲染坐标，保证不同颜色轨道使用固定的几何布局。
 export function resolveDefaultTrackGeometry(track: {
 	color: string;
 	layer: unknown;

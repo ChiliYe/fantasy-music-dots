@@ -25,6 +25,7 @@ import {
 	resolveDefaultTrackGeometry,
 } from "./notationRenderDefaults";
 
+// 记录每个 show 的 alpha 过渡状态，保证 fadeIn 只在当前 show 上维护独立计数器。
 const showAlphaTransitions = new WeakMap<
 	ParsedNotationFrame["shows"][number],
 	NumberIterator
@@ -48,6 +49,7 @@ export interface NoteRenderGeometry {
 	directionY: number;
 }
 
+// 把轨道信息转换成绘制需要的几何参数，包括起点、终点和方向向量。
 export function resolveNoteRenderGeometry(
 	track: NoteTrackInfo,
 ): NoteRenderGeometry {
@@ -63,16 +65,19 @@ export function resolveNoteRenderGeometry(
 	};
 }
 
+// 根据 note 颜色解析出真正用于 canvas 的颜色值。
 export function resolveNoteColor(note: ParsedNotationNote) {
 	return resolveDefaultNoteColor(note.color);
 }
 
+// 根据 note 的轨道描述返回该 note 的可绘制轨道几何信息。
 export function resolveNoteTrack(
 	note: ParsedNotationNote,
 ): NoteTrackInfo {
 	return resolveDefaultTrackGeometry(note.track);
 }
 
+// 生成一段波浪路径，用于 hold 线的自然晃动效果。
 export function buildWavePoints(
 	anchorX: number,
 	anchorY: number,
@@ -108,6 +113,7 @@ export function buildWavePoints(
 	return points;
 }
 
+// 画出单击型 note 的圆形点，作为 tap 的最小可见单位。
 export function drawTapNote(
 	ctx: CanvasRenderingContext2D,
 	color: string | null,
@@ -122,6 +128,7 @@ export function drawTapNote(
 	});
 }
 
+// 画出长按型 note 的延伸波纹，表示轨道上的持续按压状态。
 export function drawHoldNote(
 	ctx: CanvasRenderingContext2D,
 	color: string | null,
@@ -141,6 +148,7 @@ export function drawHoldNote(
 	});
 }
 
+// 画出拖拽型 note 的连线，表示从起点到终点的滑动轨迹。
 export function drawDragNote(
 	ctx: CanvasRenderingContext2D,
 	color: string | null,
@@ -163,6 +171,7 @@ export function drawDragNote(
 	});
 }
 
+// 画出尾点 note，组合起点、终点和当前点形成分叉型视觉。
 export function drawTailNote(
 	ctx: CanvasRenderingContext2D,
 	color: string | null,
@@ -182,6 +191,7 @@ export function drawTailNote(
 	});
 }
 
+// 计算演出从出现到当前帧经过的时间，用于后续动画状态判断。
 export function resolveShowElapsed(
 	frame: ParsedNotationFrame,
 	show: ParsedNotationFrame["shows"][number],
@@ -189,6 +199,7 @@ export function resolveShowElapsed(
 	return Math.max(0, frame.time - show.time);
 }
 
+// 计算 show 的 alpha 值，让 fadeIn 效果在时间轴上平滑出现。
 export function resolveShowAlpha(
 	frame: ParsedNotationFrame,
 	show: ParsedNotationFrame["shows"][number],
@@ -234,6 +245,7 @@ export function resolveShowAlpha(
  * @param index 索引
  * @returns
  */
+// 根据 note 的 key 分发到不同的绘制函数，实现同一 note 的多种视觉形态。
 export function drawNote(
 	ctx: CanvasRenderingContext2D,
 	frame: ParsedNotationFrame,
@@ -294,6 +306,7 @@ export function drawNote(
 	return { ctx, frame, track, note, index };
 }
 
+// 将文本演出按当前 alpha 和位移信息绘制到 canvas 上。
 export function drawShow(
 	ctx: CanvasRenderingContext2D,
 	frame: ParsedNotationFrame,
@@ -309,6 +322,7 @@ export function drawShow(
 	return { ctx, frame, show };
 }
 
+// 统一清空、填背景、绘制所有 notes 和 shows，形成当前帧的最终画面。
 export function renderFrame(
 	ctx: CanvasRenderingContext2D,
 	frame: ParsedNotationFrame,

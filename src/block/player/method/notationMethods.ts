@@ -10,6 +10,7 @@
  * const firstFrame = frames.next().value;
  * console.log(firstFrame.notes.length);
  */
+// 这一模块负责把原始谱面数据按时间分帧，并转换成渲染器可直接消费的统一结构。
 
 import type {
 	ParsedNotationFrame,
@@ -20,6 +21,7 @@ import type {
  * 读取谱面播放的目标帧率，优先使用全局变量，其次使用环境变量。
  * @returns 当前使用的帧率。
  */
+// 读取当前播放帧率，支持全局变量和环境变量两种运行时配置方式。
 export function getNotationFrameRate(): number {
 	const runtime = globalThis as typeof globalThis & {
 		__notationFrameRate?: number | string;
@@ -39,6 +41,7 @@ export function getNotationFrameRate(): number {
  * @param frameRate 当前使用的帧率。
  * @returns 单帧毫秒时长。
  */
+// 把帧率换算成毫秒级帧间隔，保证播放时序与渲染帧率一致。
 export function getFrameDuration(
 	frameRate: number = getNotationFrameRate(),
 ): number {
@@ -50,6 +53,7 @@ export function getFrameDuration(
  * @param notation 原始谱面数据。
  * @returns 最大结束时间。
  */
+// 统计所有 show 的覆盖时长，作为帧数上限的时间基准。
 export function getTotalNotationTime(
 	notation: notationFormat,
 ): number {
@@ -66,6 +70,7 @@ export function getTotalNotationTime(
  * @param frameDuration 单帧时长。
  * @returns 需要生成的总帧数。
  */
+// 计算要生成多少帧才能覆盖整段演出所需的显示时间。
 export function getFrameCount(
 	notation: notationFormat,
 	frameDuration: number = getFrameDuration(),
@@ -82,6 +87,7 @@ export function getFrameCount(
  * @param notation 原始谱面数据。
  * @returns 以颜色名为键的有效音轨列表。
  */
+// 过滤出非空轨道，保证后续只对实际存在的音轨生成 note 和帧状态。
 export function getTrackEntries(
 	notation: notationFormat,
 ): Array<[trackColor, notationTrackLayer]> {
@@ -102,6 +108,7 @@ export function getTrackEntries(
  * @example
  * const entry = createNoteEntry({ color: "red", trackLayer: trackLayerValue, currentTime: 0, frameDuration: 16.67 });
  */
+// 把一条轨道事件转换成统一的 note 对象，附带颜色、时间、效果和注释信息。
 function createNoteEntry(params: {
 	color: trackColor;
 	trackLayer: notationTrackLayer;
@@ -170,6 +177,7 @@ function createNoteEntry(params: {
  * @example
  * const notes = buildNotes([['red', trackLayer]], 0, 16.67);
  */
+// 根据当前时间和帧时长，把一组轨道转成该帧内要渲染的 note 列表。
 export function buildNotes(
 	trackEntries: Array<[trackColor, notationTrackLayer]>,
 	currentTime: number,
@@ -185,6 +193,7 @@ export function buildNotes(
 	);
 }
 
+// 把每个有效轨道包装成该帧的轨道快照，方便后续按轨道逐步绘制。
 export function buildTrackFrames(
 	trackEntries: Array<[trackColor, notationTrackLayer]>,
 	currentTime: number,
@@ -222,6 +231,7 @@ export function buildTrackFrames(
  * @example
  * const resolved = resolveTextEffect({ type: "text", content: "Hello", x: 0, y: 0, duration: 1000, time: 0 });
  */
+// 把文本演出对象规范化成统一的 effect 配置，供渲染阶段读取 alpha 和样式。
 export function resolveTextEffect(show: notationShowInfo) {
 	const envDefaultEffect =
 		import.meta.env.VITE_NOTATION_DEFAULT_EFFECT ??
@@ -255,6 +265,7 @@ export function resolveTextEffect(show: notationShowInfo) {
  * @example
  * const shows = buildShows([{ type: "text", content: "Hi", x: 0, y: 0, duration: 1000, time: 0 }]);
  */
+// 把所有原始 show 统一成当前帧可消费的演出数组，保证渲染器接口稳定。
 export function buildShows(
 	shows: notationFormat["shows"],
 ): ParsedNotationFrame["shows"] {
@@ -286,6 +297,7 @@ export function buildShows(
  * const frameIterator = parseNotation(notation);
  * const frame = frameIterator.next().value;
  */
+// 逐帧生成渲染所需的完整帧数据，连接原始谱面输入和绘制层输出。
 export function* parseNotation(
 	notation: notationFormat,
 ): Generator<ParsedNotationFrame, void, unknown> {

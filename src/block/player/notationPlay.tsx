@@ -89,6 +89,7 @@ export interface NotationPlaybackController {
  * @param options 播放控制选项
  * @returns 可用于控制播放状态的控制器
  */
+// 启动播放控制器，按帧率推进 generator 并触发每帧渲染与回调。
 export function startNotationPlayback(
 	ctx: CanvasRenderingContext2D,
 	notationGenerator: Generator<
@@ -214,6 +215,7 @@ export function startNotationPlayback(
  * gen.next(0); // 绘制第 0 帧，返回帧信息
  * gen.next(1); // 绘制第 1 帧，返回帧信息
  */
+// 生成器负责推进到目标帧、执行当前帧渲染，并把状态通过 yield 返回给调用方。
 export default function* notationPlay(
 	ctx: CanvasRenderingContext2D,
 	notationGenerator: Generator<
