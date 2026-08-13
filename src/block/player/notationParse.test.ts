@@ -100,10 +100,11 @@ describe("parseNotation", () => {
 		};
 
 		const frames = Array.from(parseNotation(notation));
+		const firstTrack = frames[0].tracks.purple;
 
 		expect(frames.length).toBeGreaterThan(0);
-		expect(frames[0].notes).toHaveLength(1);
-		expect(frames[0].notes[0].key).toBe(1);
+		expect(firstTrack?.notes).toHaveLength(1);
+		expect(firstTrack?.notes[0].key).toBe(1);
 		expect(frames[0].shows[0].effect).toBe("fadeIn");
 		expect(frames[0].shows[0].content).toBe("hello");
 	});

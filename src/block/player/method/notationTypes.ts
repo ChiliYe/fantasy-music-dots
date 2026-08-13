@@ -29,6 +29,11 @@ export interface ParsedNotationNote {
 	currentTime: number;
 }
 
+export type ParsedNotationTrackRef = {
+	color: trackColor;
+	layer: notationTrackLayer;
+};
+
 /**
  * 表示当前帧中的一个文字演出节点。
  * @example
@@ -46,12 +51,28 @@ export interface ParsedNotationShow {
 }
 
 /**
+ * 单个轨道在当前帧的状态，包括该帧的音符列表和轨道级信息。
+ */
+export interface ParsedNotationTrackFrame {
+	color: trackColor;
+	key?: notationTrackKeyType;
+	currentTime: number;
+	track: {
+		color: trackColor;
+		layer: notationTrackLayer;
+	};
+	notes: ParsedNotationNote[];
+}
+
+/**
  * 表示一次被渲染器消费的完整帧数据。
  * @example
- * const frame = { time: 0, notes: [], shows: [] };
+ * const frame = { time: 0, tracks: { red: { notes: [], currentTime: 0 } }, shows: [] };
  */
 export interface ParsedNotationFrame {
 	time: number;
-	notes: ParsedNotationNote[];
+	tracks: Partial<
+		Record<trackColor, ParsedNotationTrackFrame | null>
+	>;
 	shows: ParsedNotationShow[];
 }

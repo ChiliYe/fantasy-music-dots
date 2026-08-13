@@ -1,6 +1,9 @@
 /** @format */
 
-import type { ParsedNotationFrame } from "./method/notationTypes";
+import type {
+	ParsedNotationFrame,
+	ParsedNotationNote,
+} from "./method/notationTypes";
 import { circleBrush } from "../../general/pattern/circle";
 import { forkLineBrush } from "../../general/pattern/forkLine";
 import { verticalLineBrush } from "../../general/pattern/verticalLine";
@@ -60,14 +63,12 @@ export function resolveNoteRenderGeometry(
 	};
 }
 
-export function resolveNoteColor(
-	note: ParsedNotationFrame["notes"][number],
-) {
+export function resolveNoteColor(note: ParsedNotationNote) {
 	return resolveDefaultNoteColor(note.color);
 }
 
 export function resolveNoteTrack(
-	note: ParsedNotationFrame["notes"][number],
+	note: ParsedNotationNote,
 ): NoteTrackInfo {
 	return resolveDefaultTrackGeometry(note.track);
 }
@@ -224,11 +225,20 @@ export function resolveShowAlpha(
 	return Math.max(0, Math.min(1, value));
 }
 
+/**
+ * 绘制单个音符
+ * @param ctx 绘制上下文
+ * @param frame 当前帧对象
+ * @param track 所在轨信息
+ * @param note 音符对象
+ * @param index 索引
+ * @returns
+ */
 export function drawNote(
 	ctx: CanvasRenderingContext2D,
 	frame: ParsedNotationFrame,
 	track: NoteTrackInfo,
-	note: ParsedNotationFrame["notes"][number],
+	note: ParsedNotationNote,
 	index: number,
 ) {
 	ctx.save();
@@ -312,15 +322,18 @@ export function renderFrame(
 	ctx.fillStyle = getDefaultBackgroundFillStyle();
 	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-	frame.notes.forEach((note, index) =>
-		drawNote(
-			ctx,
-			frame,
-			resolveNoteTrack(note),
-			note,
-			index,
-		),
-	);
+	Object.values(frame.tracks ?? {}).forEach((track) => {
+		if (!track) return;
+		track.notes.forEach((note, index) =>
+			drawNote(
+				ctx,
+				frame,
+				resolveNoteTrack(note),
+				note,
+				index,
+			),
+		);
+	});
 	frame.shows.forEach((show) =>
 		drawShow(ctx, frame, show),
 	);

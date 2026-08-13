@@ -1,7 +1,5 @@
 /** @format */
 
-import type { ParsedNotationFrame } from "./method/notationTypes";
-
 export const DEFAULT_NOTE_COLOR_MAP: Record<
 	string,
 	string
@@ -91,9 +89,10 @@ export function getDefaultBackgroundFillStyle(): string {
 	return DEFAULT_BACKGROUND_FILL_STYLE;
 }
 
-export function resolveDefaultTrackGeometry(
-	track: ParsedNotationFrame["notes"][number]["track"],
-) {
+export function resolveDefaultTrackGeometry(track: {
+	color: string;
+	layer: unknown;
+}) {
 	return (
 		DEFAULT_TRACK_GEOMETRY[track.color] ?? {
 			startX: 250,

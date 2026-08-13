@@ -174,7 +174,7 @@ export function buildNotes(
 	trackEntries: Array<[trackColor, notationTrackLayer]>,
 	currentTime: number,
 	frameDuration: number,
-): ParsedNotationFrame["notes"] {
+): ParsedNotationNote[] {
 	return trackEntries.map(([color, trackLayer]) =>
 		createNoteEntry({
 			color,
@@ -183,6 +183,36 @@ export function buildNotes(
 			frameDuration,
 		}),
 	);
+}
+
+export function buildTrackFrames(
+	trackEntries: Array<[trackColor, notationTrackLayer]>,
+	currentTime: number,
+	frameDuration: number,
+): ParsedNotationFrame["tracks"] {
+	const tracks = {} as ParsedNotationFrame["tracks"];
+
+	for (const [color, trackLayer] of trackEntries) {
+		const notes = buildNotes(
+			[[color, trackLayer]],
+			currentTime,
+			frameDuration,
+		);
+		tracks[color] = {
+			color,
+			key:
+				trackLayer.key ??
+				trackLayer.notes?.[0]?.type,
+			currentTime,
+			track: {
+				color,
+				layer: trackLayer,
+			},
+			notes,
+		};
+	}
+
+	return tracks;
 }
 
 /**
@@ -268,7 +298,7 @@ export function* parseNotation(
 
 	for (let index = 0; index < frameCount; index += 1) {
 		const currentTime = index * frameDuration;
-		const notes = buildNotes(
+		const tracks = buildTrackFrames(
 			trackEntries,
 			currentTime,
 			frameDuration,
@@ -277,7 +307,7 @@ export function* parseNotation(
 
 		yield {
 			time: currentTime,
-			notes,
+			tracks,
 			shows,
 		};
 	}

@@ -1,9 +1,6 @@
 /** @format */
 
-import type {
-	ParsedNotationFrame,
-	ParsedNotationNote,
-} from "./notationTypes";
+import type { ParsedNotationNote } from "./notationTypes";
 
 /**
  * 根据轨道事件生成一个统一格式的音符条目。
@@ -83,7 +80,7 @@ export function buildNotes(
 	trackEntries: Array<[trackColor, notationTrackLayer]>,
 	currentTime: number,
 	frameDuration: number,
-): ParsedNotationFrame["notes"] {
+): ParsedNotationNote[] {
 	return trackEntries.map(([color, trackLayer]) =>
 		createNoteEntry({
 			color,

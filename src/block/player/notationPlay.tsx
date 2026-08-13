@@ -252,12 +252,17 @@ export default function* notationPlay(
 			total: 0,
 		} as CurrentNoteCount;
 		if (!frame) return counts;
-		for (const note of frame.notes) {
-			const c =
-				(note as { color?: string }).color ??
-				"unknownColor";
-			counts[c] = (counts[c] || 0) + 1;
-			counts.total += 1;
+		for (const track of Object.values(
+			frame.tracks ?? {},
+		)) {
+			if (!track) continue;
+			for (const note of track.notes) {
+				const c =
+					(note as { color?: string }).color ??
+					"unknownColor";
+				counts[c] = (counts[c] || 0) + 1;
+				counts.total += 1;
+			}
 		}
 		return counts;
 	};
