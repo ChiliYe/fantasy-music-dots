@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: general/stl/segmentDirection.ts</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: general/stl/segmentDirection.ts</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @format */
+
+/**
+ * 线段配置对象。
+ *
+ * startX/startY 表示线段起点，endX/endY 表示线段终点。
+ */
+export interface SegmentConfig {
+	/** 线段起点 x 坐标 */
+	startX: number;
+	/** 线段起点 y 坐标 */
+	startY: number;
+	/** 线段终点 x 坐标 */
+	endX: number;
+	/** 线段终点 y 坐标 */
+	endY: number;
+}
+
+/**
+ * 水平方向类型：在画布坐标系中，x 轴从左到右增大。
+ */
+export type HorizontalDirection = "left" | "right" | "none";
+
+/**
+ * 垂直方向类型：在画布坐标系中，y 轴从上到下增大。
+ */
+export type VerticalDirection = "up" | "down" | "none";
+
+/**
+ * 线段方向对象，包含水平、垂直方向和矢量信息。
+ */
+export interface SegmentDirection {
+	/** 水平方向 */
+	horizontal?: HorizontalDirection;
+	/** 垂直方向 */
+	vertical?: VerticalDirection;
+	/** x 方向增量 */
+	dx: number;
+	/** y 方向增量 */
+	dy: number;
+	/** x 方向标准化值，-1/0/1 */
+	normX: number;
+	/** y 方向标准化值，-1/0/1 */
+	normY: number;
+}
+
+/**
+ * 线段矢量对象，表示起点到终点的增量。
+ */
+export interface SegmentVector {
+	/** x 方向增量 */
+	dx: number;
+	/** y 方向增量 */
+	dy: number;
+}
+
+function normalize(value: number) {
+	if (value > 0) return 1;
+	if (value &lt; 0) return -1;
+	return 0;
+}
+
+/**
+ * 计算线段向量。
+ *
+ * 坐标系为左上角原点，x 轴向右增大，y 轴向下增大。
+ *
+ * @param config 线段起点和终点配置
+ * @returns 返回线段向量 dx、dy
+ */
+export function getSegmentVector(
+	config: SegmentConfig,
+): SegmentVector {
+	return {
+		dx: config.endX - config.startX,
+		dy: config.endY - config.startY,
+	};
+}
+
+/**
+ * 根据线段起点和终点确定方向。
+ *
+ * 返回值为可直接用于绘制的新方向对象。
+ *
+ * @param config 线段起点和终点配置
+ * @returns 包含水平、垂直方向、增量和标准化向量的方向对象
+ */
+export function getSegmentDirection(
+	config: SegmentConfig,
+): SegmentDirection {
+	const { dx, dy } = getSegmentVector(config);
+
+	const horizontal: HorizontalDirection =
+		dx > 0 ? "right" : dx &lt; 0 ? "left" : "none";
+	const vertical: VerticalDirection =
+		dy > 0 ? "down" : dy &lt; 0 ? "up" : "none";
+
+	return {
+		horizontal,
+		vertical,
+		dx,
+		dy,
+		normX: normalize(dx),
+		normY: normalize(dy),
+	};
+}
+
+/**
+ * 根据方向对象和距离计算新坐标。
+ *
+ * 该方向对象可直接用于绘制新路径。
+ *
+ * @param x 起始点 x 坐标
+ * @param y 起始点 y 坐标
+ * @param direction 线段方向对象
+ * @param distance 沿方向移动的距离，默认为 1
+ * @returns 返回移动后的新坐标
+ */
+export function getPointAlongDirection(
+	x: number,
+	y: number,
+	direction: SegmentDirection,
+	distance = 1,
+) {
+	return {
+		x: x + direction.normX * distance,
+		y: y + direction.normY * distance,
+	};
+}
+
+/**
+ * 根据线段起点、终点和距离生成新的绘制终点。
+ *
+ * @param config 线段起点和终点配置
+ * @param distance 沿线段方向生成的终点距离起点的长度
+ * @returns 返回从起点移动指定距离后的终点坐标
+ */
+export function getPathEndPoint(
+	config: SegmentConfig,
+	distance: number,
+) {
+	const direction = getSegmentDirection(config);
+	return getPointAlongDirection(
+		config.startX,
+		config.startY,
+		direction,
+		distance,
+	);
+}
+
+/**
+ * 得到线段特定位置的坐标
+ * @param config 线段起点和终点配置
+ * @param position 位置参数，范围为 0 到 1，表示线段的起点到终点的比例
+ * @returns 返回线段上指定位置的坐标
+ */
+export function getPointOnSegment(
+	config: SegmentConfig,
+	position: number,
+): { x: number; y: number } {
+	const clampedPosition = Math.max(
+		0,
+		Math.min(1, position),
+	);
+	const { dx, dy } = getSegmentVector(config);
+	return {
+		x: config.startX + dx * clampedPosition,
+		y: config.startY + dy * clampedPosition,
+	};
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FunctionPipe.html">FunctionPipe</a></li><li><a href="Queue.html">Queue</a></li><li><a href="Stack.html">Stack</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildNotes">buildNotes</a></li><li><a href="global.html#buildShows">buildShows</a></li><li><a href="global.html#circleBrush">circleBrush</a></li><li><a href="global.html#createNoteEntry">createNoteEntry</a></li><li><a href="global.html#createNumberIterator">createNumberIterator</a></li><li><a href="global.html#drawNote">drawNote</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#forkLineBrush">forkLineBrush</a></li><li><a href="global.html#frameGenerater">frameGenerater</a></li><li><a href="global.html#frameLoader">frameLoader</a></li><li><a href="global.html#getFrameCount">getFrameCount</a></li><li><a href="global.html#getFrameDuration">getFrameDuration</a></li><li><a href="global.html#getPathEndPoint">getPathEndPoint</a></li><li><a href="global.html#getPointAlongDirection">getPointAlongDirection</a></li><li><a href="global.html#getPointOnSegment">getPointOnSegment</a></li><li><a href="global.html#getSegmentDirection">getSegmentDirection</a></li><li><a href="global.html#getSegmentVector">getSegmentVector</a></li><li><a href="global.html#getTotalNotationTime">getTotalNotationTime</a></li><li><a href="global.html#getTrackEntries">getTrackEntries</a></li><li><a href="global.html#isIteratorWithCurrent">isIteratorWithCurrent</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#parseNotation">parseNotation</a></li><li><a href="global.html#resolveNumberTransition">resolveNumberTransition</a></li><li><a href="global.html#resolveTextEffect">resolveTextEffect</a></li><li><a href="global.html#ringBrush">ringBrush</a></li><li><a href="global.html#setColor">setColor</a></li><li><a href="global.html#slide">slide</a></li><li><a href="global.html#startNotationPlayback">startNotationPlayback</a></li><li><a href="global.html#waveBrush">waveBrush</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Aug 13 2026 15:34:15 GMT+0800 (新加坡标准时间)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

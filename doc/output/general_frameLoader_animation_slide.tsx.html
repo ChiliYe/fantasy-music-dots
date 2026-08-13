@@ -39,47 +39,17 @@
  */
 
 import type { FrameLoaderConfig } from "../../type/handler";
-
-type NumberIterator = Iterator&lt;number> &amp; {
-	current: number;
-};
-
-function isNumberIterator(
-	value: unknown,
-): value is NumberIterator {
-	return (
-		typeof value === "object" &amp;&amp;
-		value !== null &amp;&amp;
-		typeof (value as NumberIterator).next === "function"
-	);
-}
-
-function createNumberIterator(
-	start: number,
-	end: number,
-	counts: number,
-): NumberIterator {
-	let frame = 0;
-	const step = counts === 0 ? 0 : (end - start) / counts;
-	const iterator = {
-		current: start,
-		next() {
-			if (frame &lt; counts) {
-				iterator.current += step;
-				frame += 1;
-			} else {
-				iterator.current = end;
-			}
-			return { value: iterator.current, done: false };
-		},
-	};
-
-	return iterator;
-}
+import { createNumberIterator } from "./numberTransition";
 
 /**
- * slide：接受一个状态对象，返回一个帧生成器。
- * 每次生成器接收 `CanvasRenderingContext2D` 时，会确保传入对象的 `x`/`y` 属性为迭代器。
+ * 为帧加载配置注入平滑移动过渡。
+ * @param origin 原始配置对象。
+ * @param startX 起始 x 位置。
+ * @param endX 结束 x 位置。
+ * @param startY 起始 y 位置。
+ * @param endY 结束 y 位置。
+ * @param counts 过渡帧数。
+ * @returns 注入过渡后的配置对象。
  */
 export function slide(
 	origin: FrameLoaderConfig,
@@ -89,20 +59,8 @@ export function slide(
 	endY: number = 1,
 	counts: number = 30,
 ): FrameLoaderConfig {
-	if (!isNumberIterator(origin.x)) {
-		origin.x = createNumberIterator(
-			startX,
-			endX,
-			counts,
-		);
-	}
-	if (!isNumberIterator(origin.y)) {
-		origin.y = createNumberIterator(
-			startY,
-			endY,
-			counts,
-		);
-	}
+	origin.x = createNumberIterator(startX, endX, counts);
+	origin.y = createNumberIterator(startY, endY, counts);
 
 	return origin as FrameLoaderConfig;
 }
@@ -116,13 +74,13 @@ export function slide(
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FunctionPipe.html">FunctionPipe</a></li><li><a href="Queue.html">Queue</a></li><li><a href="Stack.html">Stack</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildNotes">buildNotes</a></li><li><a href="global.html#buildShows">buildShows</a></li><li><a href="global.html#circleBrush">circleBrush</a></li><li><a href="global.html#createNoteEntry">createNoteEntry</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#frameGenerater">frameGenerater</a></li><li><a href="global.html#frameLoader">frameLoader</a></li><li><a href="global.html#getFrameCount">getFrameCount</a></li><li><a href="global.html#getFrameDuration">getFrameDuration</a></li><li><a href="global.html#getNotationFrameRate">getNotationFrameRate</a></li><li><a href="global.html#getPathEndPoint">getPathEndPoint</a></li><li><a href="global.html#getPointAlongDirection">getPointAlongDirection</a></li><li><a href="global.html#getSegmentDirection">getSegmentDirection</a></li><li><a href="global.html#getSegmentVector">getSegmentVector</a></li><li><a href="global.html#getTotalNotationTime">getTotalNotationTime</a></li><li><a href="global.html#getTrackEntries">getTrackEntries</a></li><li><a href="global.html#isIteratorWithCurrent">isIteratorWithCurrent</a></li><li><a href="global.html#isNumberIterator">isNumberIterator</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#parseNotation">parseNotation</a></li><li><a href="global.html#resolveTextEffect">resolveTextEffect</a></li><li><a href="global.html#setColor">setColor</a></li><li><a href="global.html#slide">slide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FunctionPipe.html">FunctionPipe</a></li><li><a href="Queue.html">Queue</a></li><li><a href="Stack.html">Stack</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildNotes">buildNotes</a></li><li><a href="global.html#buildShows">buildShows</a></li><li><a href="global.html#circleBrush">circleBrush</a></li><li><a href="global.html#createNoteEntry">createNoteEntry</a></li><li><a href="global.html#createNumberIterator">createNumberIterator</a></li><li><a href="global.html#drawNote">drawNote</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#forkLineBrush">forkLineBrush</a></li><li><a href="global.html#frameGenerater">frameGenerater</a></li><li><a href="global.html#frameLoader">frameLoader</a></li><li><a href="global.html#getFrameCount">getFrameCount</a></li><li><a href="global.html#getFrameDuration">getFrameDuration</a></li><li><a href="global.html#getPathEndPoint">getPathEndPoint</a></li><li><a href="global.html#getPointAlongDirection">getPointAlongDirection</a></li><li><a href="global.html#getPointOnSegment">getPointOnSegment</a></li><li><a href="global.html#getSegmentDirection">getSegmentDirection</a></li><li><a href="global.html#getSegmentVector">getSegmentVector</a></li><li><a href="global.html#getTotalNotationTime">getTotalNotationTime</a></li><li><a href="global.html#getTrackEntries">getTrackEntries</a></li><li><a href="global.html#isIteratorWithCurrent">isIteratorWithCurrent</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#parseNotation">parseNotation</a></li><li><a href="global.html#resolveNumberTransition">resolveNumberTransition</a></li><li><a href="global.html#resolveTextEffect">resolveTextEffect</a></li><li><a href="global.html#ringBrush">ringBrush</a></li><li><a href="global.html#setColor">setColor</a></li><li><a href="global.html#slide">slide</a></li><li><a href="global.html#startNotationPlayback">startNotationPlayback</a></li><li><a href="global.html#waveBrush">waveBrush</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jul 07 2026 16:48:19 GMT+0800 (新加坡标准时间)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Aug 13 2026 15:34:15 GMT+0800 (新加坡标准时间)
 </footer>
 
 <script> prettyPrint(); </script>

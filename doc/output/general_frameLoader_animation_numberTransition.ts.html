@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: block/player/show.tsx</title>
+    <title>JSDoc: Source: general/frameLoader/animation/numberTransition.ts</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: block/player/show.tsx</h1>
+    <h1 class="page-title">Source: general/frameLoader/animation/numberTransition.ts</h1>
 
     
 
@@ -28,25 +28,61 @@
         <article>
             <pre class="prettyprint source linenums"><code>/** @format */
 
-import React from "react";
-
-type Props = {
-	className?: string;
+/**
+ * 可用于帧动画的数值迭代器。
+ */
+export type NumberIterator = Iterator&lt;number> &amp; {
+	current: number;
 };
 
 /**
- * 空的 React 类组件，仅负责 UI 容器展示。
- * 播放/渲染逻辑已迁移到 `notationPlay.tsx`。
+ * 创建一个从起点平滑推进到终点的数值迭代器。
+ * @param start 起始值。
+ * @param end 结束值。
+ * @param counts 迭代次数。
+ * @returns 可连续取值的数值迭代器。
  */
-export default class PlayerShow extends React.Component&lt;Props> {
-	render() {
-		const { className /*children*/ } = this.props;
-		return (
-			&lt;div className={className ?? "player-show"}>
-				{/* {children} */}
-			&lt;/div>
-		);
+export function createNumberIterator(
+	start: number,
+	end: number,
+	counts: number,
+): NumberIterator {
+	let frame = 0;
+	const step = counts === 0 ? 0 : (end - start) / counts;
+	const iterator = {
+		current: start,
+		next() {
+			if (frame &lt; counts) {
+				iterator.current += step;
+				frame += 1;
+			} else {
+				iterator.current = end;
+			}
+			return { value: iterator.current, done: false };
+		},
+	};
+
+	return iterator;
+}
+
+/**
+ * 根据迭代器或固定值，计算当前的过渡数值。
+ * @param iterator 过渡迭代器或直接给定的数值。
+ * @param defaultValue 未提供迭代器时的默认值。
+ * @returns 当前应使用的数值。
+ */
+export function resolveNumberTransition(
+	iterator: NumberIterator | number | undefined,
+	defaultValue: number,
+): number {
+	if (typeof iterator === "number") {
+		return iterator;
 	}
+	if (iterator &amp;&amp; typeof iterator.next === "function") {
+		iterator.next();
+		return iterator.current;
+	}
+	return defaultValue;
 }
 </code></pre>
         </article>

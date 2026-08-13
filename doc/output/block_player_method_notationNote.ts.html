@@ -28,10 +28,7 @@
         <article>
             <pre class="prettyprint source linenums"><code>/** @format */
 
-import type {
-	ParsedNotationFrame,
-	ParsedNotationNote,
-} from "./notationTypes";
+import type { ParsedNotationNote } from "./notationTypes";
 
 /**
  * 根据轨道事件生成一个统一格式的音符条目。
@@ -41,7 +38,7 @@ import type {
  * const entry = createNoteEntry({ color: "red", trackLayer, currentTime: 0, frameDuration: 16.67 });
  */
 function createNoteEntry(params: {
-	color: string;
+	color: trackColor;
 	trackLayer: notationTrackLayer;
 	currentTime: number;
 	frameDuration: number;
@@ -77,11 +74,16 @@ function createNoteEntry(params: {
 	return {
 		color,
 		layer: color,
-		key: trackLayer.key,
+		key: trackLayer.key ?? trackLayer.notes?.[0]?.type,
+		track: {
+			color,
+			layer: trackLayer,
+		},
 		comment:
 			eventSummary.length > 0
 				? `// ${color} note with ${eventSummary.slice(0, 3).join(",")}`
 				: `// ${color} note`,
+		currentTime,
 		effect:
 			eventSummary.length > 0
 				? {
@@ -103,10 +105,10 @@ function createNoteEntry(params: {
  * const notes = buildNotes([["red", trackLayer]], 0, 16.67);
  */
 export function buildNotes(
-	trackEntries: Array&lt;[string, notationTrackLayer]>,
+	trackEntries: Array&lt;[trackColor, notationTrackLayer]>,
 	currentTime: number,
 	frameDuration: number,
-): ParsedNotationFrame["notes"] {
+): ParsedNotationNote[] {
 	return trackEntries.map(([color, trackLayer]) =>
 		createNoteEntry({
 			color,
@@ -126,13 +128,13 @@ export function buildNotes(
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FunctionPipe.html">FunctionPipe</a></li><li><a href="Queue.html">Queue</a></li><li><a href="Stack.html">Stack</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildNotes">buildNotes</a></li><li><a href="global.html#buildShows">buildShows</a></li><li><a href="global.html#circleBrush">circleBrush</a></li><li><a href="global.html#createNoteEntry">createNoteEntry</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#frameGenerater">frameGenerater</a></li><li><a href="global.html#frameLoader">frameLoader</a></li><li><a href="global.html#getFrameCount">getFrameCount</a></li><li><a href="global.html#getFrameDuration">getFrameDuration</a></li><li><a href="global.html#getNotationFrameRate">getNotationFrameRate</a></li><li><a href="global.html#getPathEndPoint">getPathEndPoint</a></li><li><a href="global.html#getPointAlongDirection">getPointAlongDirection</a></li><li><a href="global.html#getSegmentDirection">getSegmentDirection</a></li><li><a href="global.html#getSegmentVector">getSegmentVector</a></li><li><a href="global.html#getTotalNotationTime">getTotalNotationTime</a></li><li><a href="global.html#getTrackEntries">getTrackEntries</a></li><li><a href="global.html#isIteratorWithCurrent">isIteratorWithCurrent</a></li><li><a href="global.html#isNumberIterator">isNumberIterator</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#parseNotation">parseNotation</a></li><li><a href="global.html#resolveTextEffect">resolveTextEffect</a></li><li><a href="global.html#setColor">setColor</a></li><li><a href="global.html#slide">slide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FunctionPipe.html">FunctionPipe</a></li><li><a href="Queue.html">Queue</a></li><li><a href="Stack.html">Stack</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildNotes">buildNotes</a></li><li><a href="global.html#buildShows">buildShows</a></li><li><a href="global.html#circleBrush">circleBrush</a></li><li><a href="global.html#createNoteEntry">createNoteEntry</a></li><li><a href="global.html#createNumberIterator">createNumberIterator</a></li><li><a href="global.html#drawNote">drawNote</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#forkLineBrush">forkLineBrush</a></li><li><a href="global.html#frameGenerater">frameGenerater</a></li><li><a href="global.html#frameLoader">frameLoader</a></li><li><a href="global.html#getFrameCount">getFrameCount</a></li><li><a href="global.html#getFrameDuration">getFrameDuration</a></li><li><a href="global.html#getPathEndPoint">getPathEndPoint</a></li><li><a href="global.html#getPointAlongDirection">getPointAlongDirection</a></li><li><a href="global.html#getPointOnSegment">getPointOnSegment</a></li><li><a href="global.html#getSegmentDirection">getSegmentDirection</a></li><li><a href="global.html#getSegmentVector">getSegmentVector</a></li><li><a href="global.html#getTotalNotationTime">getTotalNotationTime</a></li><li><a href="global.html#getTrackEntries">getTrackEntries</a></li><li><a href="global.html#isIteratorWithCurrent">isIteratorWithCurrent</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#parseNotation">parseNotation</a></li><li><a href="global.html#resolveNumberTransition">resolveNumberTransition</a></li><li><a href="global.html#resolveTextEffect">resolveTextEffect</a></li><li><a href="global.html#ringBrush">ringBrush</a></li><li><a href="global.html#setColor">setColor</a></li><li><a href="global.html#slide">slide</a></li><li><a href="global.html#startNotationPlayback">startNotationPlayback</a></li><li><a href="global.html#waveBrush">waveBrush</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jul 07 2026 16:48:19 GMT+0800 (新加坡标准时间)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Aug 13 2026 15:34:15 GMT+0800 (新加坡标准时间)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: block/player/notationPlay.tsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: block/player/notationPlay.tsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @format */
+
+import type { ParsedNotationFrame } from "./method/notationTypes";
+import { getNotationFrameRate } from "./method/notationMethods";
+import { renderFrame } from "./notationRender";
+export { parseNotation } from "./method/notationMethods";
+export {
+	buildWavePoints,
+	drawNote,
+	drawShow,
+	drawTapNote,
+	drawHoldNote,
+	drawDragNote,
+	drawTailNote,
+	renderFrame,
+} from "./notationRender";
+
+/**
+ * 调用者每次通过 `gen.next(frameIndex)` 传入当前帧索引，生成器会推进到该帧并绘制。
+ * 返回值通过 `yield` 形式传回，类型见 `FrameRenderInfo`。
+ */
+/**
+ * 表示当前帧中各类 note 的计数信息。
+ */
+/**
+ * 当前帧中不同颜色音符的计数信息。
+ */
+export interface CurrentNoteCount {
+	// 每种颜色的计数（unknownColor 用于未识别的颜色）
+	[color: string]: number;
+	/** 总音符数。 */
+	total: number;
+}
+
+/**
+ * 生成器每次返回给调用者的帧渲染信息。
+ */
+export interface FrameRenderInfo {
+	frameIndex: number;
+	time: number;
+	// 当前帧数据（可能为 undefined，当播放结束或尚未生成时）
+	frame?: ParsedNotationFrame;
+	// 兼容字段：当前帧
+	currentFrame?: ParsedNotationFrame;
+	// 各类 note 的计数
+	currentNote: CurrentNoteCount;
+	// 控制回调：暂停、继续、退出
+	pause: () => void;
+	resume: () => void;
+	quit: () => void;
+	// 是否已结束
+	done: boolean;
+}
+
+/**
+ * 播放器的控制选项。
+ */
+export interface NotationPlaybackOptions {
+	/** 是否在初始化后立即自动播放。 */
+	autoPlay?: boolean;
+	/** 使用的播放帧率。 */
+	frameRate?: number;
+	/** 每次渲染新帧时触发的回调。 */
+	onFrame?: (info: FrameRenderInfo) => void;
+	/** 播放结束时触发的回调。 */
+	onDone?: (info: FrameRenderInfo | null) => void;
+}
+
+/**
+ * 播放器控制器，暴露播放、暂停、继续、停止及单步推进能力。
+ */
+export interface NotationPlaybackController {
+	/** 开始或继续播放。 */
+	play: () => void;
+	/** 暂停当前播放。 */
+	pause: () => void;
+	/** 继续播放。 */
+	resume: () => void;
+	/** 停止播放。 */
+	stop: () => void;
+	/** 推进到指定帧或下一帧。 */
+	step: (targetFrame?: number) => FrameRenderInfo | null;
+}
+
+/**
+ * 启动谱面播放控制器，按帧率自动推进并渲染当前帧。
+ * @param ctx Canvas 渲染上下文
+ * @param notationGenerator 逐帧产出谱面帧的生成器
+ * @param options 播放控制选项
+ * @returns 可用于控制播放状态的控制器
+ */
+// 启动播放控制器，按帧率推进 generator 并触发每帧渲染与回调。
+export function startNotationPlayback(
+	ctx: CanvasRenderingContext2D,
+	notationGenerator: Generator&lt;
+		ParsedNotationFrame,
+		void,
+		unknown
+	>,
+	options: NotationPlaybackOptions = {},
+): NotationPlaybackController {
+	const frameDuration =
+		1000 /
+		(options.frameRate ?? getNotationFrameRate());
+	const generator = notationPlay(ctx, notationGenerator);
+	let timer: ReturnType&lt;
+		typeof globalThis.setInterval
+	> | null = null;
+	let running = options.autoPlay ?? true;
+	let stopped = false;
+	let latestInfo: FrameRenderInfo | null = null;
+
+	const clearTimer = () => {
+		if (timer !== null) {
+			globalThis.clearInterval(timer);
+			timer = null;
+		}
+	};
+
+	const step = (
+		targetFrame?: number,
+	): FrameRenderInfo | null => {
+		if (stopped) {
+			return null;
+		}
+
+		let result = generator.next(targetFrame);
+		let info = result.value as FrameRenderInfo | null;
+		while (!result.done &amp;&amp; info === null) {
+			result = generator.next(targetFrame);
+			info = result.value as FrameRenderInfo | null;
+		}
+		latestInfo = info;
+		if (info) {
+			options.onFrame?.(info);
+		}
+		if (result.done || info?.done) {
+			stopped = true;
+			clearTimer();
+			options.onDone?.(info ?? null);
+		}
+		return info;
+	};
+
+	const schedule = () => {
+		clearTimer();
+		if (stopped || !running) {
+			return;
+		}
+		timer = globalThis.setInterval(() => {
+			if (!running || stopped) {
+				clearTimer();
+				return;
+			}
+			const info = step();
+			if (info?.done) {
+				clearTimer();
+			}
+		}, frameDuration);
+	};
+
+	const play = () => {
+		if (stopped) {
+			return;
+		}
+		latestInfo?.resume?.();
+		running = true;
+		if (!latestInfo) {
+			step();
+		}
+		schedule();
+	};
+
+	const pause = () => {
+		running = false;
+		clearTimer();
+		latestInfo?.pause?.();
+	};
+
+	const resume = () => {
+		if (stopped) {
+			return;
+		}
+		latestInfo?.resume?.();
+		running = true;
+		if (!latestInfo) {
+			step();
+		}
+		schedule();
+	};
+
+	const stop = () => {
+		stopped = true;
+		clearTimer();
+		latestInfo?.quit?.();
+	};
+
+	if (options.autoPlay ?? true) {
+		play();
+	}
+
+	return {
+		play,
+		pause,
+		resume,
+		stop,
+		step,
+	};
+}
+
+/**
+ * 生成器：接收 `notationGenerator` 并根据外部提供的帧索引推进绘制。
+ * 用法：
+ * const gen = notationPlay(ctx, parseNotation(notation));
+ * gen.next(0); // 绘制第 0 帧，返回帧信息
+ * gen.next(1); // 绘制第 1 帧，返回帧信息
+ */
+// 生成器负责推进到目标帧、执行当前帧渲染，并把状态通过 yield 返回给调用方。
+export default function* notationPlay(
+	ctx: CanvasRenderingContext2D,
+	notationGenerator: Generator&lt;
+		ParsedNotationFrame,
+		void,
+		unknown
+	>,
+): Generator&lt;
+	FrameRenderInfo | null,
+	void,
+	number | undefined
+> {
+	let lastIndex = -1;
+	let lastFrame: ParsedNotationFrame | undefined;
+
+	// 控制状态：paused/quit
+	let paused = false;
+	let quitFlag = false;
+
+	// 控制回调实现（闭包绑定当前生成器状态）
+	const pause = () => {
+		paused = true;
+	};
+	const resume = () => {
+		paused = false;
+	};
+	const quit = () => {
+		quitFlag = true;
+	};
+
+	// helper: 统计当前帧中各类 note 的个数
+	const countNotes = (
+		frame?: ParsedNotationFrame,
+	): CurrentNoteCount => {
+		const counts: CurrentNoteCount = {
+			total: 0,
+		} as CurrentNoteCount;
+		if (!frame) return counts;
+		for (const track of Object.values(
+			frame.tracks ?? {},
+		)) {
+			if (!track) continue;
+			for (const note of track.notes) {
+				const c =
+					(note as { color?: string }).color ??
+					"unknownColor";
+				counts[c] = (counts[c] || 0) + 1;
+				counts.total += 1;
+			}
+		}
+		return counts;
+	};
+
+	// 首次等待调用者提供希望绘制的帧索引（可为 undefined，表示下一帧）
+	let requested = (yield null) as number | undefined;
+
+	// 主循环：每次根据 requested 推进到目标帧并绘制，然后 yield 当前帧信息
+	while (true) {
+		// 如果被 quit，返回结束信息并终止生成器
+		if (quitFlag) {
+			const endInfo: FrameRenderInfo = {
+				frameIndex: lastIndex,
+				time: lastFrame?.time ?? 0,
+				frame: lastFrame,
+				currentFrame: lastFrame,
+				currentNote: countNotes(lastFrame),
+				pause,
+				resume,
+				quit,
+				done: true,
+			};
+			yield endInfo;
+			return;
+		}
+
+		// 如果处于暂停状态，不推进生成器，只返回当前帧信息
+		if (paused) {
+			const pausedInfo: FrameRenderInfo = {
+				frameIndex: lastIndex,
+				time: lastFrame?.time ?? 0,
+				frame: lastFrame,
+				currentFrame: lastFrame,
+				currentNote: countNotes(lastFrame),
+				pause,
+				resume,
+				quit,
+				done: false,
+			};
+			requested = (yield pausedInfo) as
+				| number
+				| undefined;
+			continue;
+		}
+
+		const target =
+			typeof requested === "number"
+				? requested
+				: lastIndex + 1;
+
+		// 推进 notationGenerator 到目标帧（向前推进）
+		while (lastIndex &lt; target) {
+			const res = notationGenerator.next();
+			lastIndex += 1;
+			if (res.done) {
+				const info: FrameRenderInfo = {
+					frameIndex: lastIndex,
+					time: lastFrame?.time ?? 0,
+					frame: undefined,
+					currentFrame: undefined,
+					currentNote: countNotes(lastFrame),
+					pause,
+					resume,
+					quit,
+					done: true,
+				};
+				// 将结束信息返回给调用者，然后终止生成器
+				yield info;
+				return;
+			}
+			lastFrame = res.value;
+		}
+
+		// 绘制当前帧（如果有）
+		if (lastFrame) {
+			renderFrame(ctx, lastFrame);
+		}
+
+		// 构建并返回当前帧信息（包含计数与控制回调）
+		const info: FrameRenderInfo = {
+			frameIndex: lastIndex,
+			time: lastFrame?.time ?? 0,
+			frame: lastFrame,
+			currentFrame: lastFrame,
+			currentNote: countNotes(lastFrame),
+			pause,
+			resume,
+			quit,
+			done: false,
+		};
+
+		// 等待下一次调用，调用者可以传入新的 requested 帧索引
+		requested = (yield info) as number | undefined;
+	}
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FunctionPipe.html">FunctionPipe</a></li><li><a href="Queue.html">Queue</a></li><li><a href="Stack.html">Stack</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildNotes">buildNotes</a></li><li><a href="global.html#buildShows">buildShows</a></li><li><a href="global.html#circleBrush">circleBrush</a></li><li><a href="global.html#createNoteEntry">createNoteEntry</a></li><li><a href="global.html#createNumberIterator">createNumberIterator</a></li><li><a href="global.html#drawNote">drawNote</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#forkLineBrush">forkLineBrush</a></li><li><a href="global.html#frameGenerater">frameGenerater</a></li><li><a href="global.html#frameLoader">frameLoader</a></li><li><a href="global.html#getFrameCount">getFrameCount</a></li><li><a href="global.html#getFrameDuration">getFrameDuration</a></li><li><a href="global.html#getPathEndPoint">getPathEndPoint</a></li><li><a href="global.html#getPointAlongDirection">getPointAlongDirection</a></li><li><a href="global.html#getPointOnSegment">getPointOnSegment</a></li><li><a href="global.html#getSegmentDirection">getSegmentDirection</a></li><li><a href="global.html#getSegmentVector">getSegmentVector</a></li><li><a href="global.html#getTotalNotationTime">getTotalNotationTime</a></li><li><a href="global.html#getTrackEntries">getTrackEntries</a></li><li><a href="global.html#isIteratorWithCurrent">isIteratorWithCurrent</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#parseNotation">parseNotation</a></li><li><a href="global.html#resolveNumberTransition">resolveNumberTransition</a></li><li><a href="global.html#resolveTextEffect">resolveTextEffect</a></li><li><a href="global.html#ringBrush">ringBrush</a></li><li><a href="global.html#setColor">setColor</a></li><li><a href="global.html#slide">slide</a></li><li><a href="global.html#startNotationPlayback">startNotationPlayback</a></li><li><a href="global.html#waveBrush">waveBrush</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Aug 13 2026 15:34:15 GMT+0800 (新加坡标准时间)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

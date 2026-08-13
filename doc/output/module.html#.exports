@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: block/player/show.tsx</title>
+    <title>JSDoc: Class: exports</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,40 +17,137 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: block/player/show.tsx</h1>
+    <h1 class="page-title">Class: exports</h1>
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/** @format */
+        <h2><span class="attribs"><span class="type-signature"></span></span>exports<span class="signature">()</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description">空的 React 类组件，仅负责 UI 容器展示。播放/渲染逻辑已迁移到 `notationPlay.tsx`。</div>
+        
+    
+</header>
 
-import React from "react";
+<article>
+    <div class="container-overview">
+    
+        
 
-type Props = {
-	className?: string;
-};
+    
+    <h2>Constructor</h2>
+    
 
-/**
- * 空的 React 类组件，仅负责 UI 容器展示。
- * 播放/渲染逻辑已迁移到 `notationPlay.tsx`。
- */
-export default class PlayerShow extends React.Component&lt;Props> {
-	render() {
-		const { className /*children*/ } = this.props;
-		return (
-			&lt;div className={className ?? "player-show"}>
-				{/* {children} */}
-			&lt;/div>
-		);
-	}
-}
-</code></pre>
-        </article>
-    </section>
+    
+    <h4 class="name" id=".exports"><span class="type-signature"></span>new exports<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="block_player_show.tsx.html">block/player/show.tsx</a>, <a href="block_player_show.tsx.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

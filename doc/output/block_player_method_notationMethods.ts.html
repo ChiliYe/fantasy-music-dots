@@ -38,81 +38,18 @@
  * const firstFrame = frames.next().value;
  * console.log(firstFrame.notes.length);
  */
+// 这一模块负责把原始谱面数据按时间分帧，并转换成渲染器可直接消费的统一结构。
 
-/**
- * 表示一个演出效果的基础信息。
- * @example
- * const effect = { type: "fadeIn", startTime: 0, duration: 500 };
- */
-export interface ParsedNotationEffect {
-	/** 效果类型。 */
-	type: string;
-	/** 开始时间。 */
-	startTime: number;
-	/** 持续时长。 */
-	duration: number;
-}
-
-/**
- * 表示当前帧中的一个音符节点。
- * @example
- * const note = { color: "red", layer: "1", comment: "hit" };
- */
-export interface ParsedNotationNote {
-	/** 音符颜色。 */
-	color: string;
-	/** 所属层级。 */
-	layer: string;
-	/** 键位类型。 */
-	key?: notationTrackKeyType;
-	/** 备注说明。 */
-	comment: string;
-	/** 关联效果。 */
-	effect?: ParsedNotationEffect;
-}
-
-/**
- * 表示当前帧中的一个文字演出节点。
- * @example
- * const show = { type: "text", content: "Hello", effect: "fadeIn", x: 0, y: 0, duration: 1000, time: 0, config: {} };
- */
-export interface ParsedNotationShow {
-	/** 演出类型。 */
-	type: string;
-	/** 文本内容。 */
-	content: string;
-	/** 解析后的效果名。 */
-	effect: string;
-	/** X 轴坐标。 */
-	x: number;
-	/** Y 轴坐标。 */
-	y: number;
-	/** 持续时长。 */
-	duration: number;
-	/** 出现时间。 */
-	time: number;
-	/** 配置项。 */
-	config: Record&lt;string, number | string>;
-}
-
-/**
- * 表示一次被渲染器消费的完整帧数据。
- * @example
- * const frame = { time: 0, notes: [], shows: [] };
- */
-export interface ParsedNotationFrame {
-	/** 当前帧对应的时间。 */
-	time: number;
-	/** 当前帧中的音符信息。 */
-	notes: ParsedNotationNote[];
-	/** 当前帧中的文字演出信息。 */
-	shows: ParsedNotationShow[];
-}
+import type {
+	ParsedNotationFrame,
+	ParsedNotationNote,
+} from "./notationTypes";
 
 /**
  * 读取谱面播放的目标帧率，优先使用全局变量，其次使用环境变量。
  * @returns 当前使用的帧率。
  */
+// 读取当前播放帧率，支持全局变量和环境变量两种运行时配置方式。
 export function getNotationFrameRate(): number {
 	const runtime = globalThis as typeof globalThis &amp; {
 		__notationFrameRate?: number | string;
@@ -132,6 +69,7 @@ export function getNotationFrameRate(): number {
  * @param frameRate 当前使用的帧率。
  * @returns 单帧毫秒时长。
  */
+// 把帧率换算成毫秒级帧间隔，保证播放时序与渲染帧率一致。
 export function getFrameDuration(
 	frameRate: number = getNotationFrameRate(),
 ): number {
@@ -143,6 +81,7 @@ export function getFrameDuration(
  * @param notation 原始谱面数据。
  * @returns 最大结束时间。
  */
+// 统计所有 show 的覆盖时长，作为帧数上限的时间基准。
 export function getTotalNotationTime(
 	notation: notationFormat,
 ): number {
@@ -159,6 +98,7 @@ export function getTotalNotationTime(
  * @param frameDuration 单帧时长。
  * @returns 需要生成的总帧数。
  */
+// 计算要生成多少帧才能覆盖整段演出所需的显示时间。
 export function getFrameCount(
 	notation: notationFormat,
 	frameDuration: number = getFrameDuration(),
@@ -175,12 +115,13 @@ export function getFrameCount(
  * @param notation 原始谱面数据。
  * @returns 以颜色名为键的有效音轨列表。
  */
+// 过滤出非空轨道，保证后续只对实际存在的音轨生成 note 和帧状态。
 export function getTrackEntries(
 	notation: notationFormat,
-): Array&lt;[string, notationTrackLayer]> {
+): Array&lt;[trackColor, notationTrackLayer]> {
 	return Object.entries(notation.track ?? {}).filter(
 		([, layer]) => layer !== null,
-	) as Array&lt;[string, notationTrackLayer]>;
+	) as Array&lt;[trackColor, notationTrackLayer]>;
 }
 
 /**
@@ -195,8 +136,9 @@ export function getTrackEntries(
  * @example
  * const entry = createNoteEntry({ color: "red", trackLayer: trackLayerValue, currentTime: 0, frameDuration: 16.67 });
  */
+// 把一条轨道事件转换成统一的 note 对象，附带颜色、时间、效果和注释信息。
 function createNoteEntry(params: {
-	color: string;
+	color: trackColor;
 	trackLayer: notationTrackLayer;
 	currentTime: number;
 	frameDuration: number;
@@ -233,11 +175,16 @@ function createNoteEntry(params: {
 	return {
 		color,
 		layer: color,
-		key: trackLayer.key,
+		key: trackLayer.key ?? trackLayer.notes?.[0]?.type,
+		track: {
+			color,
+			layer: trackLayer,
+		},
 		comment:
 			eventSummary.length > 0
 				? `// ${color} note with ${eventSummary.slice(0, 3).join(",")}`
 				: `// ${color} note`,
+		currentTime,
 		effect:
 			eventSummary.length > 0
 				? {
@@ -255,21 +202,15 @@ function createNoteEntry(params: {
  * @param currentTime 当前帧时间。
  * @param frameDuration 当前帧时长。
  * @returns 当前帧对应的音符集合。
- */
-/**
- * 根据当前帧生成音符数组。
- * @param trackEntries 当前有效音轨集合。
- * @param currentTime 当前帧时间。
- * @param frameDuration 当前帧时长。
- * @returns 当前帧对应的音符集合。
  * @example
  * const notes = buildNotes([['red', trackLayer]], 0, 16.67);
  */
+// 根据当前时间和帧时长，把一组轨道转成该帧内要渲染的 note 列表。
 export function buildNotes(
-	trackEntries: Array&lt;[string, notationTrackLayer]>,
+	trackEntries: Array&lt;[trackColor, notationTrackLayer]>,
 	currentTime: number,
 	frameDuration: number,
-): ParsedNotationFrame["notes"] {
+): ParsedNotationNote[] {
 	return trackEntries.map(([color, trackLayer]) =>
 		createNoteEntry({
 			color,
@@ -280,11 +221,37 @@ export function buildNotes(
 	);
 }
 
-/**
- * 将文字演出映射为统一的效果描述，方便渲染器读取。
- * @param show 原始演出对象。
- * @returns 标准化后的演出配置。
- */
+// 把每个有效轨道包装成该帧的轨道快照，方便后续按轨道逐步绘制。
+export function buildTrackFrames(
+	trackEntries: Array&lt;[trackColor, notationTrackLayer]>,
+	currentTime: number,
+	frameDuration: number,
+): ParsedNotationFrame["tracks"] {
+	const tracks = {} as ParsedNotationFrame["tracks"];
+
+	for (const [color, trackLayer] of trackEntries) {
+		const notes = buildNotes(
+			[[color, trackLayer]],
+			currentTime,
+			frameDuration,
+		);
+		tracks[color] = {
+			color,
+			key:
+				trackLayer.key ??
+				trackLayer.notes?.[0]?.type,
+			currentTime,
+			track: {
+				color,
+				layer: trackLayer,
+			},
+			notes,
+		};
+	}
+
+	return tracks;
+}
+
 /**
  * 将文字演出映射为统一的效果描述，方便渲染器读取。
  * @param show 原始演出对象。
@@ -292,6 +259,7 @@ export function buildNotes(
  * @example
  * const resolved = resolveTextEffect({ type: "text", content: "Hello", x: 0, y: 0, duration: 1000, time: 0 });
  */
+// 把文本演出对象规范化成统一的 effect 配置，供渲染阶段读取 alpha 和样式。
 export function resolveTextEffect(show: notationShowInfo) {
 	const envDefaultEffect =
 		import.meta.env.VITE_NOTATION_DEFAULT_EFFECT ??
@@ -325,6 +293,7 @@ export function resolveTextEffect(show: notationShowInfo) {
  * @example
  * const shows = buildShows([{ type: "text", content: "Hi", x: 0, y: 0, duration: 1000, time: 0 }]);
  */
+// 把所有原始 show 统一成当前帧可消费的演出数组，保证渲染器接口稳定。
 export function buildShows(
 	shows: notationFormat["shows"],
 ): ParsedNotationFrame["shows"] {
@@ -356,9 +325,10 @@ export function buildShows(
  * const frameIterator = parseNotation(notation);
  * const frame = frameIterator.next().value;
  */
+// 逐帧生成渲染所需的完整帧数据，连接原始谱面输入和绘制层输出。
 export function* parseNotation(
 	notation: notationFormat,
-): Generator&lt;ParsedNotationFrame> {
+): Generator&lt;ParsedNotationFrame, void, unknown> {
 	const frameDuration = getFrameDuration();
 	const frameCount = getFrameCount(
 		notation,
@@ -368,7 +338,7 @@ export function* parseNotation(
 
 	for (let index = 0; index &lt; frameCount; index += 1) {
 		const currentTime = index * frameDuration;
-		const notes = buildNotes(
+		const tracks = buildTrackFrames(
 			trackEntries,
 			currentTime,
 			frameDuration,
@@ -377,7 +347,7 @@ export function* parseNotation(
 
 		yield {
 			time: currentTime,
-			notes,
+			tracks,
 			shows,
 		};
 	}
@@ -392,13 +362,13 @@ export function* parseNotation(
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FunctionPipe.html">FunctionPipe</a></li><li><a href="Queue.html">Queue</a></li><li><a href="Stack.html">Stack</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildNotes">buildNotes</a></li><li><a href="global.html#buildShows">buildShows</a></li><li><a href="global.html#circleBrush">circleBrush</a></li><li><a href="global.html#createNoteEntry">createNoteEntry</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#frameGenerater">frameGenerater</a></li><li><a href="global.html#frameLoader">frameLoader</a></li><li><a href="global.html#getFrameCount">getFrameCount</a></li><li><a href="global.html#getFrameDuration">getFrameDuration</a></li><li><a href="global.html#getNotationFrameRate">getNotationFrameRate</a></li><li><a href="global.html#getPathEndPoint">getPathEndPoint</a></li><li><a href="global.html#getPointAlongDirection">getPointAlongDirection</a></li><li><a href="global.html#getSegmentDirection">getSegmentDirection</a></li><li><a href="global.html#getSegmentVector">getSegmentVector</a></li><li><a href="global.html#getTotalNotationTime">getTotalNotationTime</a></li><li><a href="global.html#getTrackEntries">getTrackEntries</a></li><li><a href="global.html#isIteratorWithCurrent">isIteratorWithCurrent</a></li><li><a href="global.html#isNumberIterator">isNumberIterator</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#parseNotation">parseNotation</a></li><li><a href="global.html#resolveTextEffect">resolveTextEffect</a></li><li><a href="global.html#setColor">setColor</a></li><li><a href="global.html#slide">slide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FunctionPipe.html">FunctionPipe</a></li><li><a href="Queue.html">Queue</a></li><li><a href="Stack.html">Stack</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildNotes">buildNotes</a></li><li><a href="global.html#buildShows">buildShows</a></li><li><a href="global.html#circleBrush">circleBrush</a></li><li><a href="global.html#createNoteEntry">createNoteEntry</a></li><li><a href="global.html#createNumberIterator">createNumberIterator</a></li><li><a href="global.html#drawNote">drawNote</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#forkLineBrush">forkLineBrush</a></li><li><a href="global.html#frameGenerater">frameGenerater</a></li><li><a href="global.html#frameLoader">frameLoader</a></li><li><a href="global.html#getFrameCount">getFrameCount</a></li><li><a href="global.html#getFrameDuration">getFrameDuration</a></li><li><a href="global.html#getPathEndPoint">getPathEndPoint</a></li><li><a href="global.html#getPointAlongDirection">getPointAlongDirection</a></li><li><a href="global.html#getPointOnSegment">getPointOnSegment</a></li><li><a href="global.html#getSegmentDirection">getSegmentDirection</a></li><li><a href="global.html#getSegmentVector">getSegmentVector</a></li><li><a href="global.html#getTotalNotationTime">getTotalNotationTime</a></li><li><a href="global.html#getTrackEntries">getTrackEntries</a></li><li><a href="global.html#isIteratorWithCurrent">isIteratorWithCurrent</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#parseNotation">parseNotation</a></li><li><a href="global.html#resolveNumberTransition">resolveNumberTransition</a></li><li><a href="global.html#resolveTextEffect">resolveTextEffect</a></li><li><a href="global.html#ringBrush">ringBrush</a></li><li><a href="global.html#setColor">setColor</a></li><li><a href="global.html#slide">slide</a></li><li><a href="global.html#startNotationPlayback">startNotationPlayback</a></li><li><a href="global.html#waveBrush">waveBrush</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jul 07 2026 16:48:19 GMT+0800 (新加坡标准时间)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Aug 13 2026 15:34:15 GMT+0800 (新加坡标准时间)
 </footer>
 
 <script> prettyPrint(); </script>

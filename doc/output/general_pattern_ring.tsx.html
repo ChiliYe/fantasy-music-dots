@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: block/player/show.tsx</title>
+    <title>JSDoc: Source: general/pattern/ring.tsx</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: block/player/show.tsx</h1>
+    <h1 class="page-title">Source: general/pattern/ring.tsx</h1>
 
     
 
@@ -28,25 +28,41 @@
         <article>
             <pre class="prettyprint source linenums"><code>/** @format */
 
-import React from "react";
-
-type Props = {
-	className?: string;
-};
+import "../frameLoader/frameLoader";
+import { setColor } from "../function/setColor";
+// import { Stack } from "../stl/stack";
 
 /**
- * 空的 React 类组件，仅负责 UI 容器展示。
- * 播放/渲染逻辑已迁移到 `notationPlay.tsx`。
+ * 圆环画笔
+ * @param ctx 画布上下文
+ * @param config 配置对象，包含x、y坐标和半径
+ * @example
+ * const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+ * const ctx = canvas.getContext("2d")!;
+ * ringBrush(ctx, { x: 50, y: 50, radius: 20 });
  */
-export default class PlayerShow extends React.Component&lt;Props> {
-	render() {
-		const { className /*children*/ } = this.props;
-		return (
-			&lt;div className={className ?? "player-show"}>
-				{/* {children} */}
-			&lt;/div>
-		);
-	}
+export function ringBrush(
+	ctx: CanvasRenderingContext2D,
+	config: {
+		x: number;
+		y: number;
+		radius: number;
+		color?: string | [number, number, number];
+	},
+) {
+	ctx.save();
+	ctx.beginPath();
+	setColor(ctx, config.color);
+	ctx.arc(
+		config.x,
+		config.y,
+		config.radius,
+		0,
+		Math.PI * 2,
+	);
+	ctx.closePath();
+	ctx.stroke();
+	ctx.restore();
 }
 </code></pre>
         </article>
