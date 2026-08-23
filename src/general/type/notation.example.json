@@ -22,10 +22,9 @@
 							"easingRight": 1.0,
 							"easingType": 1,
 							"end": 255,
-							"endTime": [1, 0, 1],
-
+							"endTime": 1000.0,
 							"start": 255,
-							"startTime": [0, 0, 1]
+							"startTime": 0.0
 						}
 					],
 					"moveXEvents": [
@@ -34,20 +33,18 @@
 							"easingRight": 1.0,
 							"easingType": 1,
 							"end": 0.0,
-							"endTime": [1, 0, 1],
-
+							"endTime": 1000.0,
 							"start": 0.0,
-							"startTime": [0, 0, 1]
+							"startTime": 0.0
 						},
 						{
 							"easingLeft": 0.0,
 							"easingRight": 1.0,
 							"easingType": 1,
 							"end": 0.0,
-							"endTime": [272, 0, 1],
-
+							"endTime": 4000.0,
 							"start": 0.0,
-							"startTime": [268, 0, 1]
+							"startTime": 2000.0
 						}
 					],
 					"moveYEvents": [
@@ -56,10 +53,9 @@
 							"easingRight": 1.0,
 							"easingType": 1,
 							"end": -300.0,
-							"endTime": [1, 0, 1],
-
+							"endTime": 1500.0,
 							"start": -300.0,
-							"startTime": [0, 0, 1]
+							"startTime": 0.0
 						}
 					],
 					"rotateEvents": [
@@ -68,26 +64,28 @@
 							"easingRight": 1.0,
 							"easingType": 1,
 							"end": 0.0,
-							"endTime": [1, 0, 1],
+							"endTime": 1000.0,
 							"start": 0.0,
-							"startTime": [0, 0, 1]
+							"startTime": 0.0
 						}
 					],
 					"speedEvents": [
 						{
 							"end": 10.0,
-							"endTime": [1, 0, 1],
+							"endTime": 1000.0,
 							"start": 10.0,
-							"startTime": [0, 0, 1]
+							"startTime": 0.0
 						}
 					]
 				}
 			],
-			"notes": {
-				"type": 0,
-				"beat": [10, 10, 10],
-				"length": 0
-			}
+			"notes": [
+				{
+					"type": 1,
+					"time": 2000.0,
+					"length": 0
+				}
+			]
 		}
 	},
 	"shows": [

@@ -322,6 +322,20 @@ export function drawShow(
 	return { ctx, frame, show };
 }
 
+/**
+ * 绘制所有需要渲染的音符，形成当前帧的最终画面。
+ * @param ctx 绘制上下文
+ * @param frame 帧数据
+ * @returns
+ * @example
+ * const frame = { time: 0, tracks: { red: { notes: [], currentTime: 0 } }, shows: [] };
+ * drawNeedNotes(ctx, frame);
+ */
+export function drawNeedNotes(
+	ctx: CanvasRenderingContext2D,
+	frame: ParsedNotationFrame,
+) {}
+
 // 统一清空、填背景、绘制所有 notes 和 shows，形成当前帧的最终画面。
 export function renderFrame(
 	ctx: CanvasRenderingContext2D,
@@ -336,21 +350,24 @@ export function renderFrame(
 	ctx.fillStyle = getDefaultBackgroundFillStyle();
 	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-	Object.values(frame.tracks ?? {}).forEach((track) => {
-		if (!track) return;
-		track.notes.forEach((note, index) =>
-			drawNote(
-				ctx,
-				frame,
-				resolveNoteTrack(note),
-				note,
-				index,
-			),
-		);
-	});
-	frame.shows.forEach((show) =>
-		drawShow(ctx, frame, show),
-	);
+	//单独做一个函数用于绘制所有的 note，方便后续扩展不同的绘制策略。
+	// Object.values(frame.tracks ?? {}).forEach((track) => {
+	// 	if (!track) return;
+	// 	track.notes.forEach((note, index) =>
+	// 		drawNote(
+	// 			ctx,
+	// 			frame,
+	// 			resolveNoteTrack(note),
+	// 			note,
+	// 			index,
+	// 		),
+	// 	);
+	// });
+
+	//单独做一个函数用于绘制所有的show，方便后续扩展不同的绘制策略。
+	// frame.shows.forEach((show) =>
+	// 	drawShow(ctx, frame, show),
+	// );
 }
 
 function getDefaultFrameDuration() {

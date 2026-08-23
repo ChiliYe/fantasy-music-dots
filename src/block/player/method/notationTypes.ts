@@ -32,6 +32,7 @@ export interface ParsedNotationNote {
 	comment: string;
 	effect?: ParsedNotationEffect;
 	currentTime: number;
+	hasJudged?: boolean;
 }
 
 export type ParsedNotationTrackRef = {

@@ -285,19 +285,13 @@ export function buildShows(
 }
 
 /**
- * 逐帧生成解析后的谱面数据。
- * @param notation 原始谱面数据。
- * @returns 生成器，按帧输出 ParsedNotationFrame。
- */
-/**
- * 逐帧生成解析后的谱面数据。
+ * 逐帧生成解析后的谱面数据。连接原始谱面输入和绘制层输出。
  * @param notation 原始谱面数据。
  * @returns 生成器，按帧输出 ParsedNotationFrame。
  * @example
  * const frameIterator = parseNotation(notation);
  * const frame = frameIterator.next().value;
  */
-// 逐帧生成渲染所需的完整帧数据，连接原始谱面输入和绘制层输出。
 export function* parseNotation(
 	notation: notationFormat,
 ): Generator<ParsedNotationFrame, void, unknown> {

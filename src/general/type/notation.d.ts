@@ -9,20 +9,17 @@ interface notationMeta {
 	/**BPM*/ bpm: number;
 }
 
-interface notationEventTime {
-	0: number;
-	1: number;
-	2: number;
-}
+/** 相对乐曲开始的时间戳（毫秒） */
+type notationEventTime = number;
 
 interface notationEvent {
 	/**缓动左边界*/ easingLeft: number;
 	/**缓动右边界*/ easingRight: number;
 	/**缓动类型*/ easingType: number;
 	/**结束值*/ end: number;
-	/**结束时间*/ endTime: [number, number, number];
+	/**结束时间（相对乐曲开始的时间戳，毫秒）*/ endTime: notationEventTime;
 	/**开始值*/ start: number;
-	/**开始时间*/ startTime: [number, number, number];
+	/**开始时间（相对乐曲开始的时间戳，毫秒）*/ startTime: notationEventTime;
 	/**事件关联组*/ linkgroup?: number;
 }
 
@@ -52,11 +49,7 @@ type trackColor =
 /**单个note */
 interface notationNoteInfo {
 	/**类型 */ type: notationTrackKeyType;
-	/**节拍数[小节,拍,拍内] */ beat: [
-		number,
-		number,
-		number,
-	];
+	/**打击时间（相对乐曲开始的时间戳，毫秒） */ time: number;
 	/**长度 */ length: number;
 }
 

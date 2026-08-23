@@ -88,9 +88,9 @@ export default function CanvasTest() {
 									easingRight: 1,
 									easingType: 1,
 									end: 255,
-									endTime: [1, 0, 1],
+									endTime: 2000,
 									start: 255,
-									startTime: [0, 0, 1],
+									startTime: 1000,
 								},
 							],
 						},
@@ -98,7 +98,7 @@ export default function CanvasTest() {
 					notes: [
 						{
 							type: 3,
-							beat: [10, 10, 1],
+							time: 1000,
 							length: 10,
 						},
 					],

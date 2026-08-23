@@ -99,17 +99,24 @@ export function startNotationPlayback(
 	>,
 	options: NotationPlaybackOptions = {},
 ): NotationPlaybackController {
+	// 以目标帧率换算每帧的时间间隔，确保播放节奏与注释帧一致。
 	const frameDuration =
 		1000 /
 		(options.frameRate ?? getNotationFrameRate());
+	// 生成器会逐帧推进并返回当前帧的渲染状态信息。
 	const generator = notationPlay(ctx, notationGenerator);
+	// 定时器用于按节奏触发 step，控制播放时钟。
 	let timer: ReturnType<
 		typeof globalThis.setInterval
 	> | null = null;
+	// 当前是否处于播放状态，允许暂停/恢复切换。
 	let running = options.autoPlay ?? true;
+	// 停止后不再继续推进，避免重复消费生成器。
 	let stopped = false;
+	// 记录最新的一帧结果，供 pause/resume/stop 调用时复用状态。
 	let latestInfo: FrameRenderInfo | null = null;
 
+	// 清理当前定时器，避免多个 interval 叠加导致帧率紊乱。
 	const clearTimer = () => {
 		if (timer !== null) {
 			globalThis.clearInterval(timer);
@@ -117,6 +124,7 @@ export function startNotationPlayback(
 		}
 	};
 
+	// 推进到指定帧或下一帧，并在必要时触发渲染回调与完成回调。
 	const step = (
 		targetFrame?: number,
 	): FrameRenderInfo | null => {
@@ -142,6 +150,7 @@ export function startNotationPlayback(
 		return info;
 	};
 
+	// 启动定时器，以固定帧间隔连续推进播放进度。
 	const schedule = () => {
 		clearTimer();
 		if (stopped || !running) {
@@ -159,6 +168,7 @@ export function startNotationPlayback(
 		}, frameDuration);
 	};
 
+	// 从头开始或继续播放，并在首次播放时手动推进一帧。
 	const play = () => {
 		if (stopped) {
 			return;
@@ -171,12 +181,14 @@ export function startNotationPlayback(
 		schedule();
 	};
 
+	// 暂停播放，保留当前状态，等待后续 resume 恢复。
 	const pause = () => {
 		running = false;
 		clearTimer();
 		latestInfo?.pause?.();
 	};
 
+	// 在暂停状态下恢复计时器，并继续按帧推进。
 	const resume = () => {
 		if (stopped) {
 			return;
@@ -189,12 +201,14 @@ export function startNotationPlayback(
 		schedule();
 	};
 
+	// 立即终止播放并清理资源，调用当前帧的 quit 逻辑。
 	const stop = () => {
 		stopped = true;
 		clearTimer();
 		latestInfo?.quit?.();
 	};
 
+	// 若配置允许自动播放，则在初始化后立即启动。
 	if (options.autoPlay ?? true) {
 		play();
 	}
